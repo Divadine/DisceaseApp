@@ -1,14 +1,27 @@
+import 'dart:async';
+
+import 'package:discese_dictionary/models/triviamodel.dart';
 import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
 
 
-class Mainscreenslider extends StatelessWidget {
+class Mainscreenslider extends StatefulWidget {
 
   //final String img;
-  final int PresentIndex ;
-  final int totalDots;
-  const Mainscreenslider({super.key, required this.PresentIndex, required this.totalDots, });
+  final List<Triviamodel> triviaList;
+  //final int PresentIndex ;
+  //final int totalDots;
+  //final String triviaText;
+  const Mainscreenslider({super.key,required this.triviaList});
 
+  @override
+  State<Mainscreenslider> createState() => _MainscreensliderState();
+}
+
+class _MainscreensliderState extends State<Mainscreenslider> {
+  PageController _pageController = PageController();
+  int currentIndex =0;
+  Timer? timer;
   @override
   Widget build(BuildContext context){
 
@@ -36,62 +49,52 @@ class Mainscreenslider extends StatelessWidget {
             ),
             padding: EdgeInsets.only(top: 16),
             child: Container(
-
               child: Column(
                 children: [
+                  //title
                   Align(
                     alignment: Alignment.topCenter,
                       child: Text('Did you Know ?', textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),)
                   ),
 
                   SizedBox(height: 20,),
-                  Text("“The human brain has about 86 billion neurons!”",style: TextStyle(fontSize: 18,color: Colors.white),),
+                  //content text
+                  //Text(widget.triviaText,style: TextStyle(fontSize: 18,color: Colors.white),),
+                  SizedBox(
+                    height: 50,
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: widget.triviaList.length > 3 ? 3 : widget.triviaList.length,
+                        itemBuilder: (context,index){
+                          return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                            child:Center(
+                              child: Text(widget.triviaList[index].trivia,textAlign: TextAlign.center, style: TextStyle(fontSize: 18,color: Colors.white),),
+                            ) ,
 
+                          );
+                        }
+                    )
+                  ),
                   SizedBox(height: 40,),
-
+                  //dots
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(totalDots, (dots) =>Container(
+                    children: List.generate(widget.triviaList.length > 3 ? 3 : widget.triviaList.length, (dots) =>Container(
                       margin: EdgeInsets.symmetric(horizontal: 5),
                       height: 8,
-                      width:PresentIndex == dots ? 15 : 10,
+                      width:currentIndex == dots ? 15 : 10,
                       decoration: BoxDecoration(
                         color:  Colors.white,
                         borderRadius: BorderRadius.circular(20),
                       ),
                     )),
                   ),
-
-
-                  //SizedBox(height: 50,),
-                  //categories
                 ],
-
-
               ),
             ),
-
-          ),
-
-
-        ),
-
-        Padding(
-          padding: const EdgeInsets.only(left: 20.0,right: 20),
-          child: Row (
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text( "Categories", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
-              Text("view all",style: TextStyle(fontSize: 18),),
-            ],
           ),
         ),
-
-        SizedBox(height: 20,),
-
-
-
-
       ],
     );
   }
