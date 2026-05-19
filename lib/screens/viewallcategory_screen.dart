@@ -13,7 +13,7 @@ class ViewallcategoryScreen extends StatelessWidget {
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: Text("Categories", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),),
+        title: Text("Categories", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15,color: Colors.white),),
         backgroundColor: ColorUtils.selectedColor,
         centerTitle: true,
       ),
@@ -24,8 +24,8 @@ class ViewallcategoryScreen extends StatelessWidget {
           itemCount: categoryList.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                crossAxisSpacing: 20,
-              mainAxisSpacing: 10,
+                crossAxisSpacing: 40,
+              mainAxisSpacing: 50,
 
             ),
             itemBuilder: (context, index){

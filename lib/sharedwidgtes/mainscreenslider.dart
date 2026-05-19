@@ -7,11 +7,8 @@ import 'package:flutter/material.dart';
 
 class Mainscreenslider extends StatefulWidget {
 
-  //final String img;
+
   final List<Triviamodel> triviaList;
-  //final int PresentIndex ;
-  //final int totalDots;
-  //final String triviaText;
   const Mainscreenslider({super.key,required this.triviaList});
 
   @override
@@ -22,6 +19,53 @@ class _MainscreensliderState extends State<Mainscreenslider> {
   PageController _pageController = PageController();
   int currentIndex =0;
   Timer? timer;
+  bool isForward = true;
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    startAutoScroll();
+  }
+
+  void startAutoScroll() {
+    timer = Timer.periodic(
+      const Duration(seconds: 3),
+          (timer) {
+        if(widget.triviaList.length <=1 ) return;
+
+        if(isForward) {
+          currentIndex ++;
+
+          if(currentIndex >= widget.triviaList.length -1){
+            currentIndex = widget.triviaList.length-1;
+            isForward=false;
+          }
+        }else {
+          currentIndex --;
+          if(currentIndex <= 0){
+            currentIndex = 0;
+            isForward = true;
+          }
+        }
+
+        _pageController.animateToPage(currentIndex, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+
+
+        setState(() {});
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context){
 
@@ -40,7 +84,8 @@ class _MainscreensliderState extends State<Mainscreenslider> {
           padding: const EdgeInsets.all(20),
           child: Container(
 
-            height: 150,
+            height: 160,
+            width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.blueGrey,
               image: DecorationImage(image: AssetImage(AssetImages.mainsliderimg),fit: BoxFit.cover),
@@ -48,50 +93,46 @@ class _MainscreensliderState extends State<Mainscreenslider> {
               border:Border.all(color: Colors.black,width: 1)
             ),
             padding: EdgeInsets.only(top: 16),
-            child: Container(
-              child: Column(
-                children: [
-                  //title
-                  Align(
-                    alignment: Alignment.topCenter,
-                      child: Text('Did you Know ?', textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),)
-                  ),
+            child: Column(
+              children: [
+                SizedBox(height: 20,),
+                //title
+                Align(
+                  alignment: Alignment.topCenter,
+                    child: Text('Did you Know ?', textAlign: TextAlign.center,style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),)
+                ),
 
-                  SizedBox(height: 20,),
-                  //content text
-                  //Text(widget.triviaText,style: TextStyle(fontSize: 18,color: Colors.white),),
-                  SizedBox(
-                    height: 50,
-                    child: PageView.builder(
-                      controller: _pageController,
-                      itemCount: widget.triviaList.length > 3 ? 3 : widget.triviaList.length,
-                        itemBuilder: (context,index){
-                          return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                            child:Center(
-                              child: Text(widget.triviaList[index].trivia,textAlign: TextAlign.center, style: TextStyle(fontSize: 18,color: Colors.white),),
-                            ) ,
+                SizedBox(
+                  height: 40,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: widget.triviaList.length ,
+                      itemBuilder: (context,index){
+                        return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                          child:Center(
+                            child: Text('"${widget.triviaList[index].trivia}"' ,textAlign: TextAlign.center,maxLines: 3,overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 18,color: Colors.white),),
+                          ) ,
 
-                          );
-                        }
-                    )
-                  ),
-                  SizedBox(height: 40,),
-                  //dots
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(widget.triviaList.length > 3 ? 3 : widget.triviaList.length, (dots) =>Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
-                      height: 8,
-                      width:currentIndex == dots ? 15 : 10,
-                      decoration: BoxDecoration(
-                        color:  Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    )),
-                  ),
-                ],
-              ),
+                        );
+                      }
+                  )
+                ),
+                SizedBox(height: 40,),
+                //dots
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(widget.triviaList.length, (dots) =>Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    height: 8,
+                    width:currentIndex == dots ? 15 : 10,
+                    decoration: BoxDecoration(
+                      color:  Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  )),
+                ),
+              ],
             ),
           ),
         ),

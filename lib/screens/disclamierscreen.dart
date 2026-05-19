@@ -29,16 +29,16 @@ class _DisclamierScreenState extends State<Disclamierscreen>{
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           //1--image
-          Image.asset(AssetImages.disclamierImage,height: 300,),
-          SizedBox(height: 20,),
+          Image.asset(AssetImages.disclamierImage, height: 100,),
+          SizedBox(height: 10,),
           //2--content Text
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal:20),
             child: Text("The information provided in this app is for general educational purposes only."
                 " It is not intended to replace professional medical advice, diagnosis, or treatment. Each individual’s health condition is different, and symptoms or disease progression may vary from person to person. Always consult a qualified healthcare professional if you feel unwell or have any concerns. We are not responsible for any outcomes, misinterpretation, "
                 "or misuse of the information provided. "
                 "Use this app for knowledge and awareness only, not for self-diagnosis or treatment.",
-              style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
             ),
           ),
 
@@ -53,11 +53,11 @@ class _DisclamierScreenState extends State<Disclamierscreen>{
               },
 
               title:
-              Text("I am aware that this app is for reference only and not for medical advice.",style: TextStyle(fontSize: 18),),
+              Text("I am aware that this app is for reference only and not for medical advice.",style: TextStyle(fontSize: 10),),
 
           ),
 
-          SizedBox(height: 20,),
+          //SizedBox(height: 10,),
 
           //4--button
           ElevatedButton(

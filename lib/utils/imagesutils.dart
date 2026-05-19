@@ -22,4 +22,23 @@ class AssetImages{
 
   static const String mainsliderimg = "assets/images/pngimages/mainsliderimg.png";
 
+  //note Icon image
+  static const String note_icon = "assets/images/svgimages/note_icon.svg";
+  static const String note_icon_shaded = "assets/images/svgimages/note_icon_shaded.svg";
+  static const String add_notes = "assets/images/svgimages/add_notes.svg";
+
+
+  //diseaseScreen Appbar Icons
+  static const String speaker_icon = "assets/images/svgimages/speaker_icon.svg";
+  static const String threedots_icon = "assets/images/svgimages/threedots_icon.svg";
+
+
+  // not found images
+
+  static const String disease_bookmark_notfound = "assets/images/pngimages/disease_bookmark_notfound.png";
+  static const String video_bookmark_notfound = "assets/images/pngimages/video_bookmark_notfound.png";
+  static const String notes_bookmark_notfound = "assets/images/pngimages/notes_bookmark_notfound.png";
+
+
+
 }

@@ -3,75 +3,64 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import '../databasehelper/db_helper.dart';
+import '../models/disease_details.dart';
+
 import '../models/triviamodel.dart';
 
 class ApiService {
   final String _baseUrl = 'https://diseasedictionary.skyraanapps.com/server/api/';
 
+  Future<AllInOneModel> getAllDatas() async {
 
-  Future<List<Triviamodel>> fetchTrivias() async {
-
-    final response = await http.post(
-      Uri.parse('${_baseUrl}home'),
+    final response = await http.post(Uri.parse('${_baseUrl}home'),
       body: jsonEncode({
         'last_cat_id': 0,
         'last_disease_id': 0,
         'last_trivia_id': 0,
       }),
       headers: {
-        'Content-Type': 'application/json',
+      'Content-Type':'application/json',
       }
     );
-    print(response.statusCode);
     print(response.body);
-    //return[];
-    if (response?.statusCode == 200) {
-      final data = jsonDecode(response!.body);
-
-      final triviaLists =
-      data['resultData']['trivias'];
-
-      return triviaLists
-          .map<Triviamodel>(
-              (e) => Triviamodel.fromJson(e))
-          .toList();
+    if(response.statusCode == 200){
+      final data = jsonDecode(response.body);
+      return AllInOneModel.fromJson(data);
+    }else{
+      throw Exception('Failed');
     }
+  }
+  //2 nd API
+  Future<DiseaseDetailsModel> getAllDiseaseDetails(int id) async {
+    
+    final response = await http.post(
+        Uri.parse('${_baseUrl}disease-details'),
+      body: jsonEncode({
+        'id' : id,
+      }),
+      headers: {
+          'Content-Type' : 'application/json',
+      }
+    );
 
-    else {
+    if(response.statusCode == 200){
+      final data = jsonDecode(response.body);
+      return DiseaseDetailsModel.fromJson(data);
+    }else{
       throw Exception('failed');
     }
   }
 
 
-  Future<List<CategoryModel>> getCategories()  async{
-
-    final response = await http.post(Uri.parse('${_baseUrl}home'),body: jsonEncode({
-      'last_cat_id': 0,
-      'last_disease_id': 0,
-      'last_trivia_id': 0,
-    }),
-        headers: {
-          'Content-Type': 'application/json',
-        }
-    );
-
-    print(response.body);
-
-    if(response.statusCode == 200){
-
-      final data = jsonDecode(response.body);
-
-      final categoryLists = data['resultData']['cat_info'];
-
-      return  categoryLists.map<CategoryModel>((c) => CategoryModel.fromJson(c)).toList();
-    }
-
-    else {
-      throw Exception("failed in categories");
-    };
 
 
-  }
+
+
+
+
+
+
 
 
 }

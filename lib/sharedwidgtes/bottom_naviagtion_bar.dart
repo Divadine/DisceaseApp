@@ -1,3 +1,4 @@
+import 'package:discese_dictionary/screens/bookmark_screen.dart';
 import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -21,7 +22,10 @@ class CustomBottomNavigationBar extends StatelessWidget{
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           IconButton(
-              onPressed: () => onTap(0),
+              onPressed: ()  => onTap(0),
+
+
+
               icon:  currentIndex == 0 ? SvgPicture.asset(AssetImages.home_shaded_bottom,) :SvgPicture.asset(AssetImages.home_outline_bottom,),
           ),
 
@@ -36,7 +40,9 @@ class CustomBottomNavigationBar extends StatelessWidget{
           ),
 
           IconButton(
-              onPressed:() => onTap(3),
+              onPressed:() {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => BookmarkScreen()));
+              },
               icon: currentIndex == 3 ? SvgPicture.asset(AssetImages.bookmark_shaded_bottom) :  SvgPicture.asset(AssetImages.bookmark_outline_bottom,),
           ),
 
