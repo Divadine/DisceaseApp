@@ -14,6 +14,7 @@ import '../sharedwidgtes/mainscreenslider.dart';
 
 class DisceaseDictionary extends StatefulWidget{
 
+
   const DisceaseDictionary({super.key});
 
   @override
@@ -40,30 +41,6 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary>{
 
     fetchSaveAndLoadData();
 
-
-  }
-
-
-  Future<void> fetchDiseaseDetailsandSave(int id) async{
-    try{
-      setState(() {
-        isLoading = true;
-      });
-
-      //Api fetch
-      final data = await ApiService().getAllDiseaseDetails(id);
-      //save to Db
-      await DbHelper.instance.insertDiseaseDetails(data.resultData.disease_info);
-      await DbHelper.instance.insertDiseaseInformation(data.resultData.disease_info.id,data.resultData.disease_info.info);
-      await DbHelper.instance.insertPhotos(data.resultData.photos);
-      await DbHelper.instance.insertVideos(data.resultData.videos, data.resultData.disease_info.cat_id,);
-
-      //final videos = await DbHelper.instance.getVideosFromDbClient();
-      //print(videos.length);
-      //print(videos.first.name);
-    }catch(e) {
-      print("Disease Details Error: $e");
-    }
   }
 
 
@@ -92,8 +69,7 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary>{
         disceaseList = diseaseData;
         isLoading = false;
       });
-      // print(triviaList);
-      // print(categoryList);
+
 
     } catch (e) {
       print("Error: $e");
@@ -196,15 +172,30 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary>{
 
 
           //Alpahbetic diseace list
-          Expanded(
-              child: disceaseList.isEmpty ? Center(child: CircularProgressIndicator(),) :
-                  ListView.builder(
-                    itemCount: disceaseList.length,
-                      itemBuilder: (context,index){
-                      return AlphabetOrderDiseaseList(diseaseNameAlphabet:  disceaseList[index].disceaseName  ?? "",  diseaseId: disceaseList[index].id, catId: disceaseList[index].cat_id,);
-                      }
-                  ),
-          ),
+             Expanded(
+                // child: DraggableScrollableSheet(
+                //   initialChildSize: 0.45,
+                //   minChildSize: 0.45,
+                //   maxChildSize: 0.9,
+                //   builder: (context,scrollController){
+                //     return Container(
+                //       decoration: BoxDecoration(
+                //         color:Colors.white ,
+                //         borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25)),
+                //
+                //       ),
+                     child:
+                      disceaseList.isEmpty ? Center(child: CircularProgressIndicator(),) :
+                      ListView.builder(
+                          itemCount: disceaseList.length,
+                          itemBuilder: (context,index){
+                            return AlphabetOrderDiseaseList(diseaseNameAlphabet:  disceaseList[index].disceaseName  ?? "",  diseaseId: disceaseList[index].id, catId: disceaseList[index].cat_id,);
+                          }
+                      ),
+
+                    )
+
+
 
           
         ],

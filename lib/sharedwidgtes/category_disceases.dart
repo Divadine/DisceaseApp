@@ -1,6 +1,8 @@
 import 'package:discese_dictionary/databasehelper/db_helper.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
+import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../models/triviamodel.dart';
 import '../screens/diseasedetail_screen.dart';
@@ -19,6 +21,10 @@ class _CategoryDisceasesState extends State<CategoryDisceases> {
 
   List<DisceaseList> diseaseList = [];
   bool isLoading = true;
+  //bool isBookmarked = false;
+
+  /// store bookmark state separately
+  Map<int, bool> bookmarkedDiseases = {};
 
 
   @override
@@ -29,8 +35,15 @@ class _CategoryDisceasesState extends State<CategoryDisceases> {
 
   void loadDisease() async{
     final data = await DbHelper.instance.getDiseaseById(widget.catgoryId);
+
+    Map<int,bool> tempBookmarks = {};
+    for(var disease in data){
+      bool result = await DbHelper.instance.checkBookmarksExists(disease.id);
+      tempBookmarks[disease.id] = result;
+    }
     setState(() {
       diseaseList = data;
+      bookmarkedDiseases = tempBookmarks;
       isLoading = false;
     });
 
@@ -68,16 +81,44 @@ class _CategoryDisceasesState extends State<CategoryDisceases> {
                     itemCount: diseaseList.length,
                       itemBuilder: (context , index){
                       final disease = diseaseList[index];
+                      bool isBookmarked = bookmarkedDiseases[disease.id] ?? false;
                       return Card(
                         //margin: const EdgeInsets.all(10),
                         child: ListTile(
                           title: Text(disease.disceaseName ?? ""),
-                          trailing: const Icon(Icons.bookmark_border),
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => DiseaseDetailsScreen( catId:widget.catgoryId ,
-                              diseaseName:
-                              disease.disceaseName ??
-                                  "", diseaseId: disease.id,)));
+                          trailing:
+                          IconButton(
+                              onPressed: ()  async {
+                                if(isBookmarked){
+                                  await DbHelper.instance.deleteBookmarks(disease.id);
+                                  
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content:Text('Bookmark Removed'),duration: Duration(seconds: 1), ),
+                                  );
+                                }else {
+
+                                  await DbHelper.instance.insertBookmarks(diseaseId: disease.id, diseaseName: disease.disceaseName ?? "");
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content:Text('Bookmark Saved Successfully'),duration: Duration(seconds: 1), ),
+                                  );
+                                }
+
+                                bool updatedResult = await DbHelper.instance.checkBookmarksExists(disease.id);
+                                setState(() {
+                                  bookmarkedDiseases[disease.id] = updatedResult;
+                                });
+                              },
+                            icon: SvgPicture.asset(isBookmarked ? AssetImages.note_icon_shaded : AssetImages.bookmark_outline_bottom, color: isBookmarked ? null : Colors.black, ),
+                          ),
+                          onTap: () async {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => DiseaseDetailsScreen( catId:widget.catgoryId , diseaseName:disease.disceaseName ??"", diseaseId: disease.id,  )));
+
+                            // //refresh
+                            // bool updatedResult = await DbHelper.instance.checkBookmarksExists(disease.id);
+                            // setState(() {
+                            //   bookmarkedDiseases[disease.id] = updatedResult;
+                            // });
                           },
                         ),
                       );

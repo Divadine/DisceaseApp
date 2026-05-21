@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 
+import '../screens/search_screen.dart';
+
 class CustomBottomNavigationBar extends StatelessWidget{
+
 
   final Function (int) onTap;
   final int currentIndex ;
@@ -23,14 +26,14 @@ class CustomBottomNavigationBar extends StatelessWidget{
         children: [
           IconButton(
               onPressed: ()  => onTap(0),
-
-
-
+              
               icon:  currentIndex == 0 ? SvgPicture.asset(AssetImages.home_shaded_bottom,) :SvgPicture.asset(AssetImages.home_outline_bottom,),
           ),
 
           IconButton(
-              onPressed: () => onTap(1),
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (_) => SearchScreen()));
+              },
               icon: currentIndex == 1 ?  SvgPicture.asset(AssetImages.search_shaded_bottom) : SvgPicture.asset(AssetImages.search_outline_bottom),
           ),
 
@@ -41,7 +44,7 @@ class CustomBottomNavigationBar extends StatelessWidget{
 
           IconButton(
               onPressed:() {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => BookmarkScreen()));
+                //Navigator.push(context, MaterialPageRoute(builder: (_) => BookmarkScreen()));
               },
               icon: currentIndex == 3 ? SvgPicture.asset(AssetImages.bookmark_shaded_bottom) :  SvgPicture.asset(AssetImages.bookmark_outline_bottom,),
           ),

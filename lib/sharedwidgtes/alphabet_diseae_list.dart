@@ -53,7 +53,7 @@ class _AlphabetOrderDiseaseListState extends State<AlphabetOrderDiseaseList> {
   Widget build(BuildContext context){
     return GestureDetector(
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (_) => DiseaseDetailsScreen(catId: widget.catId, diseaseName: widget.diseaseNameAlphabet, diseaseId:widget.diseaseId,))).then((_) {checkNotes();});
+        Navigator.push(context, MaterialPageRoute(builder: (_) => DiseaseDetailsScreen(catId: widget.catId, diseaseName: widget.diseaseNameAlphabet, diseaseId:widget.diseaseId,))).then((_) {checkNotes();checkBookmark();});
 
       },
       child: Column(
@@ -111,8 +111,9 @@ class _AlphabetOrderDiseaseListState extends State<AlphabetOrderDiseaseList> {
                       setState(() {
                         isBookmarked=result;
                       });
-                    },
-                      icon: SvgPicture.asset(isBookmarked ? AssetImages.note_icon_shaded : AssetImages.bookmark_outline_bottom, color: isBookmarked ? null : Colors.black, ),),
+                      },
+                      icon: SvgPicture.asset(isBookmarked ? AssetImages.note_icon_shaded : AssetImages.bookmark_outline_bottom, color: isBookmarked ? null : Colors.black, ),
+                    ),
 
                   ],
                 ),

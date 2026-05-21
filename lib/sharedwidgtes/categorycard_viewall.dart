@@ -6,6 +6,7 @@ import 'category_disceases.dart';
 class CategorycardViewall extends StatelessWidget {
 
   final CategoryModel categorynames;
+
   const CategorycardViewall({super.key,required this.categorynames});
 
 
@@ -14,7 +15,7 @@ class CategorycardViewall extends StatelessWidget {
     return GestureDetector(
 
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (_) => CategoryDisceases(name:categorynames.name,  catgoryId: categorynames.id, )));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => CategoryDisceases(name:categorynames.name,  catgoryId: categorynames.id,  )));
       },
       child: Container(
         height: 170,

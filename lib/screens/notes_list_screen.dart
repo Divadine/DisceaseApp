@@ -64,33 +64,6 @@ class _NotesListScreenState extends State<NotesListScreen> {
           return Card(
             child: ListTile(
               leading:
-              // (notes[index]['image'] != null &&
-              //     notes[index]['image'].toString().isNotEmpty)
-              //     ? ClipRRect(
-              //   borderRadius: BorderRadius.circular(8),
-              //   child: Image.network(
-              //     notes[index]['image'],
-              //     width: 60,
-              //     height: 60,
-              //     fit: BoxFit.cover,
-              //   ),
-              // )
-              //     : Container(
-              //   width: 60,
-              //   height: 60,
-              //   decoration: BoxDecoration(
-              //     color: Colors.grey.shade300,
-              //     borderRadius: BorderRadius.circular(8),
-              //   ),
-              //   child: Icon(
-              //     Icons.note,
-              //     color: Colors.grey.shade700,
-              //   ),
-              // ),
-
-
-
-
               Image.network(notes[index]['image'] ?? "",width: 60,fit: BoxFit.cover,),
               title: Text(notes[index]['title'],style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),),
               subtitle: Text(notes[index]['content'],maxLines: 2,overflow: TextOverflow.ellipsis,),

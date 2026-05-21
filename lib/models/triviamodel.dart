@@ -83,6 +83,10 @@ class DisceaseList{
   String toString() {
     return disceaseName ?? "";
   }
+
+
+
+
 }
 
 //model-3

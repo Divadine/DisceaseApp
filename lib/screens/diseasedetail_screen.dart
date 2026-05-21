@@ -41,7 +41,15 @@ class _DiseaseDetailsScreenState  extends State<DiseaseDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    checkBookmark();
     fetchDetails();
+  }
+
+  Future<void>  checkBookmark() async {
+    final result = await DbHelper.instance.checkBookmarksExists(widget.diseaseId);
+    setState(() {
+      isBookMarked = result;
+    });
   }
 
   Future<void> fetchDetails() async {
@@ -70,6 +78,7 @@ class _DiseaseDetailsScreenState  extends State<DiseaseDetailsScreen> {
       print("Video API Response:");
       print("DB Videos Count: ${dbVideos.length}");
 
+
       setState(() {
         infoList = dbInfo;
         photos = dbPhotos;
@@ -77,12 +86,16 @@ class _DiseaseDetailsScreenState  extends State<DiseaseDetailsScreen> {
         isLoading = false;
       });
 
+
     }catch(e){
       print('Error ------> ${e}');
       setState(() {
         isLoading = false;
       });
     }
+
+    print(videos);
+
 
   }
 
@@ -125,7 +138,7 @@ class _DiseaseDetailsScreenState  extends State<DiseaseDetailsScreen> {
 
               });
             },
-                icon: isBookMarked ? SvgPicture.asset(AssetImages.note_icon_shaded,):SvgPicture.asset(AssetImages.bookmark_outline_bottom),
+                icon: isBookMarked ? SvgPicture.asset(AssetImages.bookmark_shaded_bottom,):SvgPicture.asset(AssetImages.bookmark_outline_bottom),
             ),
             //menu -- threedots
             PopupMenuButton(
@@ -172,110 +185,77 @@ class _DiseaseDetailsScreenState  extends State<DiseaseDetailsScreen> {
             : TabBarView(
           children: [
 
-            /// ALL TAB
+
+            //1 st widget
+            // ALL TAB
             ListView(
-              children: [
+        children: [
 
-                /// Disease Name
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Center(
-                    child: Text(
-                      widget.diseaseName,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+
+          //Disease Name
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Center(
+              child: Text(
+                widget.diseaseName,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
                 ),
+              ),
+            ),
+          ),
 
-                /// Disease Image
-                if (photos.isNotEmpty)
-                  Image.network(
-                    photos.first.image,
-                    height: 250,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+          // Disease Image
+          if (photos.isNotEmpty)
+            Image.network(
+              photos.first.image,
+              height: 250,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+
+          const SizedBox(height: 10),
+
+          //all contents
+
+                  for (int index = 0; index < infoList.length; index++)
+                  Padding(
+                  padding: const EdgeInsets.all(10),
+                child:
+                  //ExpansionTile(
+               //     title: Container(
+               //       decoration: BoxDecoration(
+               //         color: const Color(0xffEFE6FD) ,
+               //         borderRadius: BorderRadius.circular(30),
+               //       ),
+               //       child: Row(
+               //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+               //         children: [
+               //           Text(infoList[index].title,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.black),),
+               //           Icon(expandedIndex == index  ? Ic),
+               //
+               //         ],
+               //       ),
+               //     )
+               // ),
+                    ExpansionTile(
+               // backgroundColor:const Color(0xffEFE6FD) ,
+                title: Text(infoList[index].title,),
+
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Html(
+                      data: infoList[index].content,
+                    ),
                   ),
-
-                const SizedBox(height: 10),
-
-                /// Expandable Sections
-                ...infoList.asMap().entries.map((entry) {
-                  int index = entry.key;
-                  InfoModel info = entry.value;
-
-                  bool isExpanded = expandedIndex == index;
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
-                    child: Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ExpansionTile(
-                        tilePadding: EdgeInsets.symmetric(horizontal: 16),
-                        backgroundColor: Colors.white,
-                        collapsedBackgroundColor: Colors.white,
+                ],
+              ),
+            ),
+            ]
 
 
-                        /// track expanded tile
-                        onExpansionChanged: (value) {
-                          setState(() {
-                            expandedIndex = value ? index : null;
-                          });
-                        },
-
-                        /// arrow icon
-                        trailing: Icon(
-
-                          isExpanded
-                              ? Icons.keyboard_arrow_up
-                              : Icons.keyboard_arrow_down,
-                        ),
-
-                        /// only title background color changes
-                        title: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isExpanded
-                                ? const Color(0xffEFE6FD)
-                                : Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            info.title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            color: Colors.white,
-                            padding: const EdgeInsets.all(12),
-                            child: Html(
-                              data: info.content,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ],
             ),
 
             /// PHOTOS TAB

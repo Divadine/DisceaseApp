@@ -40,5 +40,14 @@ class AssetImages{
   static const String notes_bookmark_notfound = "assets/images/pngimages/notes_bookmark_notfound.png";
 
 
+  //search screen icons
+  static const String filter_in_search = "assets/images/svgimages/filter_in_search.svg";
+  static const String microphone_in_search = "assets/images/svgimages/microphone_in_search.svg";
+  static const String search_icon_for_searchscreen = "assets/images/svgimages/search_icon_for_searchscreen.svg";
+  static const String close_icon = "assets/images/svgimages/close_icon.svg";
 
+
+  //search not found images
+  static const String no_search_found = "assets/images/pngimages/no_search_found.png";
+  static const String search_for_disease = "assets/images/pngimages/search_for_disease.png";
 }
