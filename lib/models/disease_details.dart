@@ -117,16 +117,17 @@ class PhotoModel {
 //model-6
 class VideoModel{
   final int id;
+
   final int disease_id;
   final String name;
   final String video;
   final String thumbnail_image;
   final String description;
 
-  VideoModel({required this.id, required this.disease_id, required this.name, required this.video, required this.thumbnail_image, required this.description});
+  VideoModel({required this.id, required this.disease_id, required this.name, required this.video, required this.thumbnail_image, required this.description,  });
 
   factory VideoModel.fromJson(Map<String, dynamic> json){
-    return VideoModel(id: json['id'], disease_id: json['disease_id'], name: json['name'], video: json['video'], thumbnail_image: json['thumbnail_image'], description: json['description']
+    return VideoModel(id: json['id'], disease_id: json['disease_id'], name: json['name'], video: json['video'], thumbnail_image: json['thumbnail_image'], description: json['description'],
     );
   }
 
@@ -134,6 +135,7 @@ class VideoModel{
     return {
       'id' : id,
       'disease_id' : disease_id,
+
       'name' : name,
       'video' : video,
       'thumbnail_image' : thumbnail_image,

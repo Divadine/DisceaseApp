@@ -50,4 +50,10 @@ class AssetImages{
   //search not found images
   static const String no_search_found = "assets/images/pngimages/no_search_found.png";
   static const String search_for_disease = "assets/images/pngimages/search_for_disease.png";
+
+  //video pause icon
+  static const String video_pause = "assets/images/svgimages/video_pause.svg";
+  static const String video_pause_icon = "assets/images/svgimages/video_pause_icon.svg";
+  static const String video_instruction_icon = "assets/images/svgimages/video_instruction_icon.svg";
+
 }

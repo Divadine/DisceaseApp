@@ -1,68 +1,68 @@
-
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+
 import 'package:http/http.dart' as http;
 
-import '../databasehelper/db_helper.dart';
 import '../models/disease_details.dart';
-
 import '../models/triviamodel.dart';
 
 class ApiService {
-  final String _baseUrl = 'https://diseasedictionary.skyraanapps.com/server/api/';
+  final String _baseUrl =
+      'https://diseasedictionary.skyraanapps.com/server/api/';
 
   Future<AllInOneModel> getAllDatas() async {
-
-    final response = await http.post(Uri.parse('${_baseUrl}home'),
+    final response = await http.post(
+      Uri.parse('${_baseUrl}home'),
       body: jsonEncode({
         'last_cat_id': 0,
         'last_disease_id': 0,
         'last_trivia_id': 0,
       }),
-      headers: {
-      'Content-Type':'application/json',
-      }
+      headers: {'Content-Type': 'application/json'},
     );
     print(response.body);
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return AllInOneModel.fromJson(data);
-    }else{
+    } else {
       throw Exception('Failed');
     }
   }
+
   //2 nd API
   Future<DiseaseDetailsModel> getAllDiseaseDetails(int id) async {
-    
     final response = await http.post(
-        Uri.parse('${_baseUrl}disease-details'),
-      body: jsonEncode({
-        'id' : id,
-      }),
-      headers: {
-          'Content-Type' : 'application/json',
-      }
+      Uri.parse('${_baseUrl}disease-details'),
+      body: jsonEncode({'id': id}),
+      headers: {'Content-Type': 'application/json'},
     );
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return DiseaseDetailsModel.fromJson(data);
-    }else{
+    } else {
       throw Exception('failed');
     }
   }
 
+  // 3rd Api for videos
 
+  Future<List<VideoModel>> getVideosApi(int lastId) async {
+    final response = await http.post(
+      Uri.parse('${_baseUrl}videos'),
+      body: jsonEncode({'last_id': lastId}),
+      headers: {'Content-Type': 'application/json'},
+    );
 
-
-
-
-
-
-
-
-
-
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print(data);
+      List videos = data['resultData'];
+      print(videos.length);
+      return videos.map((e) => VideoModel.fromJson(e)).toList();
+    } else {
+      throw Exception('no video found');
+    }
+  }
 }
 
 // class AppNetwork {
@@ -214,5 +214,3 @@ class ApiService {
 //     };
 //   }
 // }
-
-

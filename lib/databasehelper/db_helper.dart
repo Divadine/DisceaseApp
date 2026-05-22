@@ -94,7 +94,7 @@ class DbHelper {
     await data.execute('''
     CREATE TABLE videoTable(
     id INTEGER PRIMARY KEY,
-    cat_id INTEGER,
+    
     disease_id INTEGER,
     name TEXT,
     video TEXT,
