@@ -3,6 +3,7 @@ import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../screens/bookmark_screen.dart';
 import '../screens/search_screen.dart';
 import '../screens/video_showing_screen.dart';
 
@@ -64,7 +65,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
           IconButton(
             onPressed: () {
-              //Navigator.push(context, MaterialPageRoute(builder: (_) => BookmarkScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => BookmarkScreen()),
+              );
             },
             icon: currentIndex == 3
                 ? SvgPicture.asset(AssetImages.bookmark_shaded_bottom)
