@@ -111,6 +111,18 @@ class DbHelper {
     disease_name TEXT
     )
     ''');
+
+    await data.execute('''
+    CREATE TABLE videoBookmarks(
+     id INTEGER PRIMARY KEY,
+    
+    disease_id INTEGER,
+    name TEXT,
+    video TEXT,
+    thumbnail_image TEXT,
+    description TEXT
+    )
+    ''');
   }
 
   //firstApi datas
@@ -397,7 +409,7 @@ class DbHelper {
     return result.isNotEmpty;
   }
 
-  //videos
+  //videos from database
 
   Future<List<VideoModel>> getAllVideos() async {
     final dbClient = await dataBase;
@@ -409,4 +421,66 @@ class DbHelper {
 
     return result.map((v) => VideoModel.fromJson(v)).toList();
   }
+
+  //video bookmarks
+  Future<void> insertVideoBookmarks(VideoModel video) async {
+    final dbClient = await dataBase;
+
+    await dbClient.insert(
+      'videoBookmarks',
+      video.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> deleteVideoBookmarks(int videoId) async {
+    final dbClient = await dataBase;
+
+    await dbClient.delete(
+      'videoBookmarks',
+      where: 'id = ?',
+      whereArgs: [videoId],
+    );
+  }
+
+  Future<bool> checkVideoBookmarksExist(int videoId) async {
+    final dbClient = await dataBase;
+
+    final result = await dbClient.query(
+      'videoBookmarks',
+      where: 'id = ?',
+      whereArgs: [videoId],
+    );
+
+    return result.isNotEmpty;
+  }
+
+  Future<List<VideoModel>> getVideoBookmarks() async {
+    final dbClient = await dataBase;
+
+    final result = await dbClient.query('videoBookmarks');
+
+    return result.isEmpty
+        ? []
+        : result
+              .map<VideoModel>(
+                (e) => VideoModel(
+                  video: e['video'],
+                  id: e['id'],
+                  name: e['name'],
+                  thumbnail_image: e['thumbnail_image'],
+                  description: e['description'],
+                  disease_id: 0,
+                ),
+              )
+              .toList();
+  }
+
+  // id INTEGER PRIMARY KEY,
+  //
+  //     disease_id INTEGER,
+  // name TEXT,
+  //     video TEXT,
+  // thumbnail_image TEXT,
+  //     description TEXT
 }

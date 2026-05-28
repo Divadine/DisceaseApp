@@ -1,8 +1,10 @@
 import 'package:discese_dictionary/databasehelper/db_helper.dart';
+import 'package:discese_dictionary/models/disease_details.dart';
+import 'package:discese_dictionary/screens/video_showing_screen.dart';
 import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
-import '../sharedwidgtes/bottom_naviagtion_bar.dart';
 import '../utils/app_utils.dart';
 import 'diseasedetail_screen.dart';
 import 'notes_list_screen.dart';
@@ -20,12 +22,14 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
 
   List<Map<String, dynamic>> bookmarksDisease = [];
   List<Map<String, dynamic>> notes = [];
+  List<VideoModel> bookmarksVideos = [];
 
   @override
   void initState() {
     super.initState();
     loadBookmarks();
     loadNotes();
+    loadVideoBookmarks();
   }
 
   Future loadNotes() async {
@@ -39,6 +43,15 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     final result = await DbHelper.instance.getBookmarks();
     setState(() {
       bookmarksDisease = result;
+    });
+  }
+
+  Future loadVideoBookmarks() async {
+    final data = await DbHelper.instance.getVideoBookmarks();
+    print(data);
+
+    setState(() {
+      bookmarksVideos = data;
     });
   }
 
@@ -152,7 +165,103 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                   ),
 
             //video Bookmark
-            Center(child: Image.asset(AssetImages.video_bookmark_notfound)),
+            bookmarksVideos.isEmpty
+                ? Center(
+                    child: Image.asset(AssetImages.video_bookmark_notfound),
+                  )
+                : GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                    ),
+                    itemCount: bookmarksVideos.length,
+                    itemBuilder: (context, index) {
+                      final vid = bookmarksVideos[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => VideoShowingScreen(
+                                name: 'Bookmark Videos',
+                                videos: bookmarksVideos,
+                                selectedIndex: index,
+                                // diseaseId: widget.diseaseId,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.4),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                //thumbnail image
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(30),
+                                        topRight: Radius.circular(30),
+                                      ),
+                                      child: Image.network(
+                                        vid.thumbnail_image,
+                                        height: 200,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 70,
+                                      width: 70,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.5),
+                                        shape: BoxShape.circle,
+                                      ),
+
+                                      child: Center(
+                                        child: SvgPicture.asset(
+                                          AssetImages.video_pause_icon,
+                                          height: 20,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                //title
+                                Padding(
+                                  padding: EdgeInsets.all(30),
+                                  child: Text(
+                                    vid.name,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
 
             //Notes Bookmark Tab
             notes.isEmpty
@@ -198,18 +307,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
 
             //NotesListScreen(diseaseId: , image: '',),
           ],
-        ),
-
-        //bottom
-        bottomNavigationBar: SafeArea(
-          child: CustomBottomNavigationBar(
-            currentIndex: selectedIndex,
-            onTap: (index) {
-              setState(() {
-                selectedIndex = index;
-              });
-            },
-          ),
         ),
       ),
     );

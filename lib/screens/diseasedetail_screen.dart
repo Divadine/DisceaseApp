@@ -4,6 +4,7 @@ import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../api/apiservice.dart';
 import '../models/disease_details.dart';
@@ -41,6 +42,164 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
     super.initState();
     checkBookmark();
     fetchDetails();
+  }
+
+  Future<void> showReportBottomSheet() async {
+    int? selectedReasonId;
+
+    TextEditingController otherController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+      ),
+
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setBottomState) {
+            bool isOtherSelected =
+                selectedReasonId == AppUtils.reportList.last.id;
+
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+              ),
+
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+
+                children: [
+                  /// title
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                    children: [
+                      const SizedBox(),
+                      const Text(
+                        "Report",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+
+                        child: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  const Text("Why are you reporting this Content?"),
+
+                  const SizedBox(height: 15),
+
+                  /// reasons
+                  ...List.generate(AppUtils.reportList.length, (index) {
+                    final item = AppUtils.reportList[index];
+
+                    return RadioListTile(
+                      value: item.id,
+
+                      groupValue: selectedReasonId,
+                      activeColor: ColorUtils.selectedColor,
+
+                      title: Text(item.reason),
+                      onChanged: (value) {
+                        setBottomState(() {
+                          selectedReasonId = value;
+                        });
+                      },
+                    );
+                  }),
+
+                  /// other textfield
+                  if (isOtherSelected)
+                    Container(
+                      margin: const EdgeInsets.only(top: 10),
+
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+
+                      child: TextField(
+                        controller: otherController,
+                        maxLines: 4,
+
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+
+                          hintText: "Type Your detailed feedback here!",
+
+                          contentPadding: EdgeInsets.all(12),
+                        ),
+                      ),
+                    ),
+
+                  const SizedBox(height: 20),
+
+                  /// submit button
+                  SizedBox(
+                    width: 140,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedReasonId == null
+                            ? Colors.grey
+                            : ColorUtils.selectedColor,
+                      ),
+
+                      onPressed: selectedReasonId == null
+                          ? null
+                          : () async {
+                              await ApiService().submitReport(
+                                typeId: 2,
+
+                                contentId: widget.diseaseId,
+
+                                reasonId: selectedReasonId!,
+
+                                deviceId: 1,
+
+                                reason: otherController.text,
+                              );
+
+                              Navigator.pop(context);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    "Report submitted successfully",
+                                  ),
+                                ),
+                              );
+                            },
+
+                      child: const Text(
+                        "Submit",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   Future<void> checkBookmark() async {
@@ -109,7 +268,7 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
         appBar: AppBar(
           //title: Text(widget.diseaseName,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
           //centerTitle: true,
-          backgroundColor: ColorUtils.selectedColor,
+          backgroundColor: ColorUtils.primary,
           actions: [
             //speaker
             IconButton(
@@ -156,10 +315,40 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
             ),
             //menu -- threedots
             PopupMenuButton(
+              onSelected: (value) {
+                if (value == 'share') {
+                  final shareParams = ShareParams(
+                    title: 'Disease Dictionary',
+                    text:
+                        'Details of the Diseases URL : ${'https://diseasedictionary.skyraantech.com/server/api/'}',
+                  );
+                  SharePlus.instance.share(shareParams);
+                } else if (value == 'report') {
+                  showReportBottomSheet();
+                }
+              },
               icon: SvgPicture.asset(AssetImages.threedots_icon),
               itemBuilder: (context) => [
-                const PopupMenuItem(value: "share", child: Text("Share")),
-                const PopupMenuItem(value: "report", child: Text("Report")),
+                const PopupMenuItem(
+                  value: "share",
+                  child: Row(
+                    children: [
+                      Icon(Icons.share),
+                      SizedBox(width: 10),
+                      Text("Share"),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: "report",
+                  child: Row(
+                    children: [
+                      Icon(Icons.report),
+                      SizedBox(width: 10),
+                      Text("Report"),
+                    ],
+                  ),
+                ),
               ],
             ),
           ],

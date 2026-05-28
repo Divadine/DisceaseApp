@@ -3,29 +3,29 @@ import 'package:discese_dictionary/screens/diseasedetail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../models/triviamodel.dart';
 import '../screens/notes_list_screen.dart';
 import '../utils/imagesutils.dart';
 
-class AlphabetOrderDiseaseList  extends StatefulWidget {
-
+class AlphabetOrderDiseaseList extends StatefulWidget {
   final String diseaseNameAlphabet;
   final int diseaseId;
   final int catId;
-   const AlphabetOrderDiseaseList({super.key, required this.diseaseNameAlphabet, required this.diseaseId, required this.catId, });
+
+  const AlphabetOrderDiseaseList({
+    super.key,
+    required this.diseaseNameAlphabet,
+    required this.diseaseId,
+    required this.catId,
+  });
 
   @override
-  State<AlphabetOrderDiseaseList> createState() => _AlphabetOrderDiseaseListState();
+  State<AlphabetOrderDiseaseList> createState() =>
+      _AlphabetOrderDiseaseListState();
 }
 
-
-
-
 class _AlphabetOrderDiseaseListState extends State<AlphabetOrderDiseaseList> {
-
   bool hasNotes = false;
   bool isBookmarked = false;
-
 
   @override
   void initState() {
@@ -35,93 +35,136 @@ class _AlphabetOrderDiseaseListState extends State<AlphabetOrderDiseaseList> {
   }
 
   Future checkBookmark() async {
-    final result = await DbHelper.instance.checkBookmarksExists(widget.diseaseId);
+    final result = await DbHelper.instance.checkBookmarksExists(
+      widget.diseaseId,
+    );
     setState(() {
-      isBookmarked=result;
+      isBookmarked = result;
     });
   }
 
-  Future checkNotes() async{
+  Future checkNotes() async {
     final result = await DbHelper.instance.checkNotesExist(widget.diseaseId);
     setState(() {
-      hasNotes=result;
+      hasNotes = result;
     });
   }
 
-
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (_) => DiseaseDetailsScreen(catId: widget.catId, diseaseName: widget.diseaseNameAlphabet, diseaseId:widget.diseaseId,))).then((_) {checkNotes();checkBookmark();});
-
+      onTap: () async {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => DiseaseDetailsScreen(
+              catId: widget.catId,
+              diseaseName: widget.diseaseNameAlphabet,
+              diseaseId: widget.diseaseId,
+            ),
+          ),
+        );
+        await checkBookmark();
+        await checkNotes();
       },
       child: Column(
-
         children: [
-          SizedBox(height: 20,),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.only(left: 10,right: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: Container(
               height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Color(0xffFFFFFF),
-
               ),
 
               child: Padding(
-
-                padding: const EdgeInsets.only(left: 15,right: 10),
+                padding: const EdgeInsets.only(left: 15, right: 10),
                 child: Row(
-
                   children: [
+                    Expanded(
+                      child: Text(
+                        widget.diseaseNameAlphabet,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 200),
 
-                    Expanded(child: Text(widget.diseaseNameAlphabet ,maxLines:1,overflow:TextOverflow.ellipsis,style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 16),)),
-                    SizedBox(width: 200,),
-
-                    if(hasNotes)
-                    IconButton(onPressed: (){
-                      setState(() {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) =>NotesListScreen(diseaseId: widget.diseaseId, image: '',))).then((_){checkNotes();});
-                      });
-                    }, icon:SvgPicture.asset(AssetImages.note_icon,color: Colors.black,), ),
-
+                    if (hasNotes)
+                      IconButton(
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => NotesListScreen(
+                                diseaseId: widget.diseaseId,
+                                image: '',
+                              ),
+                            ),
+                          );
+                          await checkNotes();
+                          await checkBookmark();
+                        },
+                        icon: SvgPicture.asset(
+                          AssetImages.note_icon,
+                          color: Colors.black,
+                        ),
+                      ),
 
                     // bookmark
-                    IconButton(onPressed: () async {
-                      if(isBookmarked){
+                    IconButton(
+                      onPressed: () async {
+                        if (isBookmarked) {
+                          await DbHelper.instance.deleteBookmarks(
+                            widget.diseaseId,
+                          );
 
-                        await DbHelper.instance.deleteBookmarks(widget.diseaseId);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(" Bookmark is removed"),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        } else {
+                          await DbHelper.instance.insertBookmarks(
+                            diseaseId: widget.diseaseId,
+                            diseaseName: widget.diseaseNameAlphabet,
+                          );
 
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text(" Bookmark is removed"),
-                          duration:  Duration(seconds: 1),
-                        ));
-                      }else{
-                        await DbHelper.instance.insertBookmarks(diseaseId: widget.diseaseId, diseaseName: widget.diseaseNameAlphabet);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Bookmark saved successfully'),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        }
 
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            content: Text('Bookmark saved successfully'),
-                          duration: Duration(seconds: 1),
-                        ));
-                      }
-
-                      final result = await DbHelper.instance.checkBookmarksExists(widget.diseaseId);
-                      setState(() {
-                        isBookmarked=result;
-                      });
+                        final result = await DbHelper.instance
+                            .checkBookmarksExists(widget.diseaseId);
+                        setState(() {
+                          isBookmarked = result;
+                        });
                       },
-                      icon: SvgPicture.asset(isBookmarked ? AssetImages.note_icon_shaded : AssetImages.bookmark_outline_bottom, color: isBookmarked ? null : Colors.black, ),
+                      icon: SvgPicture.asset(
+                        isBookmarked
+                            ? AssetImages.note_icon_shaded
+                            : AssetImages.bookmark_outline_bottom,
+                        color: isBookmarked ? null : Colors.black,
+                      ),
                     ),
-
                   ],
                 ),
               ),
             ),
           ),
         ],
-
       ),
     );
   }

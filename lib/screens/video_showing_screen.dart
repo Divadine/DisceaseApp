@@ -1,21 +1,23 @@
 import 'package:discese_dictionary/api/apiservice.dart';
+import 'package:discese_dictionary/databasehelper/db_helper.dart';
 import 'package:discese_dictionary/models/disease_details.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoShowingScreen extends StatefulWidget {
-  // final int diseaseId;
   final String name;
   final List<VideoModel> videos;
+  final int selectedIndex;
 
   const VideoShowingScreen({
     super.key,
     required this.name,
     required this.videos,
-    // required this.diseaseId,
+    this.selectedIndex = 0,
   });
 
   @override
@@ -25,31 +27,51 @@ class VideoShowingScreen extends StatefulWidget {
 class _VideoShowingScreenState extends State<VideoShowingScreen> {
   VideoPlayerController? videoController;
   bool isExpanded = false;
+  bool isBookmarked = false;
 
   List<VideoModel> videos = [];
-  int currentIndex = 0;
+  late int currentIndex;
+  PageController pageController = PageController();
 
   @override
   void initState() {
+    currentIndex = widget.selectedIndex;
     super.initState();
     initialFunction();
   }
 
+  Future<void> checkVideoBookmarks() async {
+    final result = await DbHelper.instance.checkVideoBookmarksExist(
+      videos[currentIndex].id,
+    );
+
+    setState(() {
+      isBookmarked = result;
+    });
+  }
+
   Future<void> initialFunction() async {
+    print('index = ===============$currentIndex : ${widget.selectedIndex}');
     if (widget.videos.isNotEmpty) {
       videos = widget.videos;
     } else {
       await getVideosFromApi();
     }
     if (videos.isEmpty) return;
-    initializeVideo(videos.first);
+    await initializeVideo(videos[currentIndex]);
+    await checkVideoBookmarks();
+    if (currentIndex > 0) {
+      pageController.jumpToPage(currentIndex);
+    }
   }
 
   Future<void> initializeVideo(VideoModel video) async {
     try {
       videoController?.pause();
       videoController?.dispose();
+
       setState(() {});
+
       videoController = VideoPlayerController.networkUrl(
         Uri.parse(video.video),
       );
@@ -79,19 +101,22 @@ class _VideoShowingScreenState extends State<VideoShowingScreen> {
       await getVideosFromApi();
     }
     await initializeVideo(videos[index]);
+
+    await checkVideoBookmarks();
   }
 
   @override
   void dispose() {
     videoController?.dispose();
     super.dispose();
+    pageController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: ColorUtils.selectedColor,
+        backgroundColor: ColorUtils.primary,
         title: Text(
           widget.name,
           style: TextStyle(
@@ -105,6 +130,7 @@ class _VideoShowingScreenState extends State<VideoShowingScreen> {
 
       body: videos.isNotEmpty
           ? PageView.builder(
+              controller: pageController,
               itemCount: videos.length,
               scrollDirection: Axis.vertical,
               onPageChanged: onPageChange,
@@ -168,7 +194,7 @@ class _VideoShowingScreenState extends State<VideoShowingScreen> {
                             Text(
                               isExpanded
                                   ? video.description
-                                  : '${video.description.substring(0, video.description.length > 250 ? 250 : (video.description.length - 3))}...',
+                                  : '${video.description.substring(0, video.description.length > 100 ? 100 : (video.description.length - 50))}...',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.white,
@@ -230,15 +256,34 @@ class _VideoShowingScreenState extends State<VideoShowingScreen> {
                             children: [
                               //save
                               IconButton(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.save_alt_outlined,
-                                  color: Colors.white,
-                                  size: 40,
-                                ),
+                                onPressed: () async {
+                                  final currentVideo = videos[currentIndex];
+                                  if (isBookmarked) {
+                                    await DbHelper.instance
+                                        .deleteVideoBookmarks(currentVideo.id);
+                                  } else {
+                                    await DbHelper.instance
+                                        .insertVideoBookmarks(video);
+
+                                    setState(() {
+                                      isBookmarked = true;
+                                    });
+                                  }
+
+                                  await checkVideoBookmarks();
+                                },
+                                icon: isBookmarked
+                                    ? SvgPicture.asset(
+                                        AssetImages.bookmark_shaded_bottom,
+                                        color: Colors.black,
+                                      )
+                                    : SvgPicture.asset(
+                                        AssetImages.bookmark_outline_bottom,
+                                        color: Colors.red,
+                                      ),
                               ),
                               Text(
-                                'Save',
+                                'Bookmark',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
@@ -277,7 +322,14 @@ class _VideoShowingScreenState extends State<VideoShowingScreen> {
                           Column(
                             children: [
                               IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  final shareParams = ShareParams(
+                                    title: 'Disease Dictionary',
+                                    text:
+                                        'Video of the Diseases URL : ${'https://diseasedictionary.skyraantech.com/server/api/'}',
+                                  );
+                                  SharePlus.instance.share(shareParams);
+                                },
                                 icon: Icon(
                                   Icons.share,
                                   color: Colors.white,

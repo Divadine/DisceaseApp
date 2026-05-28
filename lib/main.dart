@@ -1,22 +1,38 @@
-import 'package:discese_dictionary/screens/onboardingscreen.dart';
+import 'dart:async';
+
+import 'package:discese_dictionary/api/apiservice.dart';
+import 'package:discese_dictionary/screens/mainscreen.dart';
+import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
-
-void main(){
+void main() async {
+  AppUtils.reportList = await ApiService().getReportsReasons();
   runApp(MyApp());
 }
 
+StreamController<bool> themeCtrl = StreamController.broadcast();
 
-class MyApp extends StatelessWidget{
-
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context){
-    return MaterialApp(
-      home: DisceseApp(),
-      debugShowCheckedModeBanner: false,
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: themeCtrl.stream,
+      builder: (context, asyncSnapshot) {
+        print(
+          "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
+        );
+        return MaterialApp(
+          home: Mainscreen(),
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
 }

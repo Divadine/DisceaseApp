@@ -3,10 +3,6 @@ import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../screens/bookmark_screen.dart';
-import '../screens/search_screen.dart';
-import '../screens/video_showing_screen.dart';
-
 class CustomBottomNavigationBar extends StatelessWidget {
   final Function(int) onTap;
   final int currentIndex;
@@ -34,42 +30,23 @@ class CustomBottomNavigationBar extends StatelessWidget {
           ),
 
           IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => SearchScreen()),
-              );
-            },
+            onPressed: () => onTap(1),
+
             icon: currentIndex == 1
                 ? SvgPicture.asset(AssetImages.search_shaded_bottom)
                 : SvgPicture.asset(AssetImages.search_outline_bottom),
           ),
 
           IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => VideoShowingScreen(
-                    name: 'Reels',
-                    videos: [],
-                    // diseaseId: 0,
-                  ),
-                ),
-              );
-            },
+            onPressed: () => onTap(2),
+
             icon: currentIndex == 2
                 ? SvgPicture.asset(AssetImages.video_shaded_bottom)
                 : SvgPicture.asset(AssetImages.video_outline_bottom),
           ),
 
           IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => BookmarkScreen()),
-              );
-            },
+            onPressed: () => onTap(3),
             icon: currentIndex == 3
                 ? SvgPicture.asset(AssetImages.bookmark_shaded_bottom)
                 : SvgPicture.asset(AssetImages.bookmark_outline_bottom),
