@@ -25,9 +25,6 @@ class _MyAppState extends State<MyApp> {
     return StreamBuilder(
       stream: themeCtrl.stream,
       builder: (context, asyncSnapshot) {
-        print(
-          "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
-        );
         return MaterialApp(
           home: Mainscreen(),
           debugShowCheckedModeBanner: false,

@@ -82,7 +82,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ListTile(
                     leading: Icon(Icons.access_alarm),
                     title: Text('About us'),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => DisclamierscreenContents(),
+                        ),
+                      );
+                    },
                     trailing: Icon(Icons.arrow_forward_ios),
                   ),
 
@@ -90,7 +97,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ListTile(
                     leading: Icon(Icons.privacy_tip_sharp),
                     title: Text('Privacy & Policy'),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => DisclamierscreenContents(),
+                        ),
+                      );
+                    },
                     trailing: Icon(Icons.arrow_forward_ios),
                   ),
 

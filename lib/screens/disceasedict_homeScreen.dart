@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:discese_dictionary/screens/settings_screen.dart';
-import 'package:discese_dictionary/screens/viewallcategory_screen.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -86,6 +85,8 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary> {
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = Theme.of(context).scaffoldBackgroundColor;
+
     List<Triviamodel> currentThreeTrivia = [];
     if (triviaList.isNotEmpty) {
       currentThreeTrivia = List.generate(
@@ -116,133 +117,262 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
+      body: Stack(
+        children: [
+          /// BACKGROUND CONTENT
+          Column(
+            children: [
+              // slider
+              triviaList.isEmpty
+                  ? Center(child: Text("No data"))
+                  : Mainscreenslider(triviaList: triviaList.take(3).toList()),
 
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                //slider
-                triviaList.isEmpty
-                    ? Center(child: Text("No data"))
-                    : Mainscreenslider(triviaList: triviaList.take(3).toList()),
+              SizedBox(height: 10),
 
-                // print(currentThreeTrivia);
-                SizedBox(height: 10),
-
-                //categories and viewAll text
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Categories",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                      ),
-
-                      //viewAll
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ViewallcategoryScreen(
-                                categoryList: categoryList,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          "view all",
-                          style: TextStyle(fontSize: 15, color: Colors.black),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 20),
-
-                //category Lists Ui
-                categoryList.isEmpty
-                    ? Center(child: Text(" no data"))
-                    : SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-
-                        child: Row(
-                          children: List.generate(
-                            categoryList.length > 10 ? 10 : categoryList.length,
-                            (index) => Padding(
-                              padding: EdgeInsets.all(10),
-                              child: DisceaseCategories(
-                                category: categoryList[index],
-                                bgColor: bgColor[index % bgColor.length],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                SizedBox(height: 40),
-                //Disease List alphabetically
-                Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Diseases A-Z",
+              // categories title
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Categories",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
-                        color: Colors.black,
+                      ),
+                    ),
+
+                    TextButton(onPressed: () {}, child: Text("view all")),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+              // categories list
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(
+                    categoryList.length > 10 ? 10 : categoryList.length,
+                    (index) => Padding(
+                      padding: EdgeInsets.all(10),
+                      child: DisceaseCategories(
+                        category: categoryList[index],
+                        bgColor: bgColor[index % bgColor.length],
                       ),
                     ),
                   ),
                 ),
+              ),
+            ],
+          ),
 
-                //Alpahbetic diseace list
-                Expanded(
-                  // child: DraggableScrollableSheet(
-                  //   initialChildSize: 0.45,
-                  //   minChildSize: 0.45,
-                  //   maxChildSize: 0.9,
-                  //   builder: (context,scrollController){
-                  //     return Container(
-                  //       decoration: BoxDecoration(
-                  //         color:Colors.white ,
-                  //         borderRadius: BorderRadius.only(topRight: Radius.circular(25), topLeft: Radius.circular(25)),
-                  //
-                  //       ),
-                  child: disceaseList.isEmpty
-                      ? Center(child: CircularProgressIndicator())
-                      : ListView.builder(
-                          itemCount: disceaseList.length,
-                          itemBuilder: (context, index) {
-                            return AlphabetOrderDiseaseList(
-                              diseaseNameAlphabet:
-                                  disceaseList[index].disceaseName ?? "",
-                              diseaseId: disceaseList[index].id,
-                              catId: disceaseList[index].cat_id,
-                            );
-                          },
-                        ),
+          /// DRAGGABLE SHEET
+          DraggableScrollableSheet(
+            initialChildSize: 0.45,
+            minChildSize: 0.45,
+            maxChildSize: 1.0,
+            snap: true,
+            builder: (context, scrollController) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
                 ),
-              ],
-            ),
 
-      //bottom
-      // bottomNavigationBar: SafeArea(
-      //   child: CustomBottomNavigationBar(
-      //     currentIndex: selectedIndex,
-      //     onTap: (index) {
-      //       setState(() {
-      //         selectedIndex = index;
-      //       });
-      //     },
-      //   ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+
+                    Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Diseases A-Z",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    Expanded(
+                      child: ListView.builder(
+                        controller: scrollController,
+                        itemCount: disceaseList.length,
+                        itemBuilder: (context, index) {
+                          return AlphabetOrderDiseaseList(
+                            diseaseNameAlphabet:
+                                disceaseList[index].disceaseName ?? "",
+                            diseaseId: disceaseList[index].id,
+                            catId: disceaseList[index].cat_id,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+
+      // body: isLoading
+      //     ? Center(child: CircularProgressIndicator())
+      //     : Column(
+      //   mainAxisAlignment: MainAxisAlignment.start,
+      //   children: [
+      //     //slider
+      //     triviaList.isEmpty
+      //         ? Center(child: Text("No data"))
+      //         : Mainscreenslider(triviaList: triviaList.take(3).toList()),
+      //
+      //     // print(currentThreeTrivia);
+      //     SizedBox(height: 10),
+      //
+      //     //categories and viewAll text
+      //     Padding(
+      //       padding: const EdgeInsets.only(left: 20.0, right: 20),
+      //       child: Row(
+      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //         children: [
+      //           Text(
+      //             "Categories",
+      //             style: TextStyle(
+      //               fontWeight: FontWeight.bold,
+      //               fontSize: 20,
+      //             ),
+      //           ),
+      //
+      //           //viewAll
+      //           TextButton(
+      //             onPressed: () {
+      //               Navigator.push(
+      //                 context,
+      //                 MaterialPageRoute(
+      //                   builder: (_) =>
+      //                       ViewallcategoryScreen(
+      //                         categoryList: categoryList,
+      //                       ),
+      //                 ),
+      //               );
+      //             },
+      //             child: Text(
+      //               "view all",
+      //               style: TextStyle(fontSize: 15, color: Colors.black),
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //
+      //     SizedBox(height: 20),
+      //
+      //     //category Lists Ui
+      //     categoryList.isEmpty
+      //         ? Center(child: Text(" no data"))
+      //         : SingleChildScrollView(
+      //       scrollDirection: Axis.horizontal,
+      //
+      //       child: Row(
+      //         children: List.generate(
+      //           categoryList.length > 10 ? 10 : categoryList.length,
+      //               (index) =>
+      //               Padding(
+      //                 padding: EdgeInsets.all(10),
+      //                 child: DisceaseCategories(
+      //                   category: categoryList[index],
+      //                   bgColor: bgColor[index % bgColor.length],
+      //                 ),
+      //               ),
+      //         ),
+      //       ),
+      //     ),
+      //
+      //     SizedBox(height: 40),
+      //
+      //     //Disease List alphabetically title a-z
+      //     Expanded(
+      //       child: DraggableScrollableSheet(
+      //         initialChildSize: 0.45,
+      //         minChildSize: 0.45,
+      //         maxChildSize: 1.0,
+      //         expand: true,
+      //         builder: (context, scrollController) {
+      //           return Container(
+      //             decoration: const BoxDecoration(
+      //               color: Colors.transparent,
+      //               // borderRadius: BorderRadius.only(
+      //               //   topLeft: Radius.circular(),
+      //               //   topRight: Radius.circular(25),
+      //               // ),
+      //             ),
+      //             child: Column(
+      //               crossAxisAlignment: CrossAxisAlignment.start,
+      //               children: [
+      //
+      //                 /// drag handle
+      //                 // Center(
+      //                 //   child: Padding(
+      //                 //     padding: const EdgeInsets.only(top: 10),
+      //                 //     child: Container(
+      //                 //       width: 50,
+      //                 //       height: 5,
+      //                 //       decoration: BoxDecoration(
+      //                 //         color: Colors.grey,
+      //                 //         borderRadius: BorderRadius.circular(10),
+      //                 //       ),
+      //                 //     ),
+      //                 //   ),
+      //                 // ),
+      //                 const SizedBox(height: 20),
+      //                 Padding(
+      //                   padding: EdgeInsets.only(left: 20),
+      //                   child: Align(
+      //                     alignment: Alignment.topLeft,
+      //                     child: Text(
+      //                       "Diseases A-Z",
+      //                       style: TextStyle(
+      //                         fontWeight: FontWeight.bold,
+      //                         fontSize: 20,
+      //                         color: Colors.black,
+      //                       ),
+      //                     ),
+      //                   ),
+      //                 ),
+      //
+      //                 //Alpahbetic diseace list
+      //                 Expanded(
+      //                   child: disceaseList.isEmpty
+      //                       ? Center(child: CircularProgressIndicator())
+      //                       : ListView.builder(
+      //                     controller: scrollController,
+      //                     // shrinkWrap: true,
+      //                     // physics: const NeverScrollableScrollPhysics(),
+      //                     itemCount: disceaseList.length,
+      //                     itemBuilder: (context, index) {
+      //                       return AlphabetOrderDiseaseList(
+      //                         diseaseNameAlphabet:
+      //                         disceaseList[index]
+      //                             .disceaseName ??
+      //                             "",
+      //                         diseaseId: disceaseList[index].id,
+      //                         catId: disceaseList[index].cat_id,
+      //                       );
+      //                     },
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //           );
+      //         },
+      //       ),
+      //     ),
+      //   ],
       // ),
     );
   }
