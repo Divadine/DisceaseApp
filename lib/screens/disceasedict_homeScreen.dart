@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:discese_dictionary/screens/settings_screen.dart';
+import 'package:discese_dictionary/screens/viewallcategory_screen.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -145,14 +146,14 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary> {
 
                     TextButton(
                       onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (_) => CategorycardViewall(
-                        //       categorynames: categoryList,
-                        //     ),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ViewallcategoryScreen(
+                              categoryList: categoryList,
+                            ),
+                          ),
+                        );
                       },
                       child: Text("view all"),
                     ),
