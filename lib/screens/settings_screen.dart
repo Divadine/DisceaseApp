@@ -3,6 +3,7 @@ import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../sharedwidgtes/disclamier_contents.dart';
+import 'font_style_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -66,7 +67,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ListTile(
                     leading: Icon(Icons.font_download_off_rounded),
                     title: Text('FontStyle'),
-                    onTap: () {},
+                    onTap: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => FontStyleScreen()),
+                      );
+                      setState(() {});
+                    },
                     trailing: Icon(Icons.arrow_forward_ios),
                   ),
 

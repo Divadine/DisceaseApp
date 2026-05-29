@@ -69,6 +69,13 @@ class _SearchScreenState extends State<SearchScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+          ),
           backgroundColor: ColorUtils.primary,
           centerTitle: true,
           title: Text(

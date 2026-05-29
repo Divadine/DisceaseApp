@@ -18,6 +18,13 @@ class _DisclamierScreenState extends State<Disclamierscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+        ),
         title: Text(
           "Disclaimer",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),

@@ -65,7 +65,8 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
           ),
           title: Text(
             'Bookmark',

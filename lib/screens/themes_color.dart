@@ -29,6 +29,13 @@ class _ThemesColorState extends State<ThemesColor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+        ),
         backgroundColor: ColorUtils.selectedColor,
         title: Text(
           "Themes",

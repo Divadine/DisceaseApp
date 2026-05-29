@@ -4,22 +4,17 @@ import 'package:flutter/material.dart';
 
 import 'notes_list_screen.dart';
 
-
-class NotesScreen extends StatefulWidget{
-
+class NotesScreen extends StatefulWidget {
   final int diseaseId;
   final String image;
 
-
-  const NotesScreen({super.key, required this.diseaseId, required this.image, });
+  const NotesScreen({super.key, required this.diseaseId, required this.image});
 
   @override
   State<NotesScreen> createState() => _NotesScreenState();
 }
 
-
-class _NotesScreenState extends State<NotesScreen>{
-
+class _NotesScreenState extends State<NotesScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
   bool isSaved = false;
@@ -27,23 +22,41 @@ class _NotesScreenState extends State<NotesScreen>{
   bool isFill = false;
 
   Future saveNotes() async {
-    await DbHelper.instance.insertNotes(diseaseId: widget.diseaseId, title: titleController.text, content: contentController.text, image: widget.image ?? "");
+    await DbHelper.instance.insertNotes(
+      diseaseId: widget.diseaseId,
+      title: titleController.text,
+      content: contentController.text,
+      image: widget.image ?? "",
+    );
 
     Navigator.pop(context, true);
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
-        title: Text('Notes',style: TextStyle(color: Colors.white,fontSize: 22,fontWeight: FontWeight.bold,),),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+        ),
+        title: Text(
+          'Notes',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
         backgroundColor: ColorUtils.selectedColor,
       ),
 
-      body:Padding(
-          padding: EdgeInsets.all(30),
+      body: Padding(
+        padding: EdgeInsets.all(30),
         child: Column(
           children: [
             TextField(
@@ -53,57 +66,73 @@ class _NotesScreenState extends State<NotesScreen>{
 
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                hintText:" Add title",
-
+                hintText: " Add title",
               ),
             ),
 
-            SizedBox(height: 20,),
+            SizedBox(height: 20),
 
             TextField(
               controller: contentController,
               maxLines: 6,
               maxLength: 250,
               decoration: const InputDecoration(
-
-                hintText:"Text here...",
+                hintText: "Text here...",
 
                 border: OutlineInputBorder(),
               ),
-
             ),
 
             //SizedBox(height: 30,),
 
             //buttons
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 //cancel button
                 ElevatedButton(
-                    onPressed: (){
-                      Navigator.pop(context);
-                      // setState(() {
-                      //   isCancel=!isCancel;
-                      // });
-                    },
-                    child: Text('cancel',style: TextStyle(color: isCancel  ? ColorUtils.selectedColor: Color(0xff828282)),)
+                  onPressed: () {
+                    Navigator.pop(context);
+                    // setState(() {
+                    //   isCancel=!isCancel;
+                    // });
+                  },
+                  child: Text(
+                    'cancel',
+                    style: TextStyle(
+                      color: isCancel
+                          ? ColorUtils.selectedColor
+                          : Color(0xff828282),
+                    ),
+                  ),
                 ),
 
                 //save button
                 ElevatedButton(
+                  onPressed: () async {
+                    setState(() {
+                      isSaved = !isSaved;
+                    });
+                    await saveNotes();
 
-                    onPressed: () async {
-
-                      setState(()  {
-                        isSaved=!isSaved;
-                      });
-                      await saveNotes();
-
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => NotesListScreen(diseaseId: widget.diseaseId,image: widget.image,)));
-                    },
-                    child: Text('save',style: TextStyle(color: isSaved ? ColorUtils.selectedColor : Color(0xff828282) ),)
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => NotesListScreen(
+                          diseaseId: widget.diseaseId,
+                          image: widget.image,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'save',
+                    style: TextStyle(
+                      color: isSaved
+                          ? ColorUtils.selectedColor
+                          : Color(0xff828282),
+                    ),
+                  ),
                 ),
               ],
             ),

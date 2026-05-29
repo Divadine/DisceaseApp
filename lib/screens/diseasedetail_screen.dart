@@ -266,6 +266,13 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+          ),
           //title: Text(widget.diseaseName,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
           //centerTitle: true,
           backgroundColor: ColorUtils.primary,

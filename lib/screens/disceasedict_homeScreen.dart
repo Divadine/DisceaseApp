@@ -143,7 +143,19 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary> {
                       ),
                     ),
 
-                    TextButton(onPressed: () {}, child: Text("view all")),
+                    TextButton(
+                      onPressed: () {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (_) => CategorycardViewall(
+                        //       categorynames: categoryList,
+                        //     ),
+                        //   ),
+                        // );
+                      },
+                      child: Text("view all"),
+                    ),
                   ],
                 ),
               ),
