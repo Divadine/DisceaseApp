@@ -59,14 +59,22 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
           color: Colors.white,
         ),
         centerTitle: true,
-        title: Text(
-          'Font Style',
-          style: TextStyle(
+        title: AppText(
+          text: 'Font Style',
+          style: appTextStyle(
+            color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
           ),
         ),
+        //Text(
+        //   'Font Style',
+        //   style: TextStyle(
+        //     fontSize: 20,
+        //     fontWeight: FontWeight.bold,
+        //     color: Colors.white,
+        //   ),
+        // ),
         backgroundColor: ColorUtils.selectedColor,
       ),
 
@@ -76,14 +84,18 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Center(
-              child: Text(
-                'Preview',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.black,
-                ),
+              child: AppText(
+                text: 'Preview',
+                style: appTextStyle(color: Colors.black),
               ),
+              //Text(
+              //   'Preview',
+              //   style: TextStyle(
+              //     fontWeight: FontWeight.bold,
+              //     fontSize: 18,
+              //     color: Colors.black,
+              //   ),
+              // ),
             ),
             SizedBox(height: 20),
 
@@ -97,26 +109,39 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: Text(
-                  text,
-                  style: AppFonts.getFont(selectedFont ?? "Inter"),
-
+                child: AppText(
+                  text: text,
+                  style: AppFonts.getFont(selectedFont ?? 'Inter'),
                   textAlign: TextAlign.center,
                 ),
+                //Text(
+                //   text,
+                //   style: AppFonts.getFont(selectedFont ?? "Inter"),
+                //
+                //   textAlign: TextAlign.center,
+                // ),
               ),
             ),
 
             SizedBox(height: 30),
 
             Center(
-              child: Text(
-                'Choose Font',
-                style: TextStyle(
+              child: AppText(
+                text: 'Choose Font',
+                style: appTextStyle(
+                  color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Colors.black,
                 ),
               ),
+              // Text(
+              //   'Choose Font',
+              //   style: TextStyle(
+              //     fontWeight: FontWeight.bold,
+              //     fontSize: 18,
+              //     color: Colors.black,
+              //   ),
+              // ),
             ),
 
             SizedBox(height: 20),
@@ -130,7 +155,8 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
               child: Column(
                 children: fonts.map((value) {
                   return RadioListTile<String>(
-                    title: Text(value),
+                    title: AppText(text: value),
+                    //Text(value),
                     value: value,
                     groupValue: selectedFont,
                     activeColor: ColorUtils.selectedColor,
@@ -153,10 +179,14 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(fontSize: 15, color: Colors.black),
+                  child: AppText(
+                    text: 'Cancel',
+                    style: appTextStyle(fontSize: 15, color: Colors.black),
                   ),
+                  // Text(
+                  //   'Cancel',
+                  //   style: TextStyle(fontSize: 15, color: Colors.black),
+                  // ),
                 ),
                 SizedBox(width: 40),
                 ElevatedButton(
@@ -164,14 +194,22 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
                     backgroundColor: ColorUtils.selectedColor,
                   ),
                   onPressed: saveFont,
-                  child: Text(
-                    'Apply',
-                    style: TextStyle(
+                  child: AppText(
+                    text: 'Apply',
+                    style: appTextStyle(
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
-                      fontSize: 15,
                     ),
                   ),
+                  // Text(
+                  //   'Apply',
+                  //   style: TextStyle(
+                  //     fontWeight: FontWeight.bold,
+                  //     color: Colors.white,
+                  //     fontSize: 15,
+                  //   ),
+                  // ),
                 ),
               ],
             ),

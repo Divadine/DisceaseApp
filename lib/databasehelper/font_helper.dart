@@ -28,6 +28,7 @@ class AppText extends StatelessWidget {
   final Color? color;
   final double? fontSize;
   final FontWeight? fontWeight;
+  final TextDecoration? textDecoration;
   final TextAlign? textAlign;
   final int? maxLines;
   final TextOverflow? textOverflow;
@@ -44,12 +45,21 @@ class AppText extends StatelessWidget {
     this.maxLines,
     this.textOverflow,
     this.softwrap,
+    this.textDecoration,
   });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
+      style:
+          style ??
+          appTextStyle(
+            color: color ?? Colors.black,
+            fontWeight: fontWeight,
+            fontSize: fontSize,
+            textDecoration: textDecoration,
+          ),
       textAlign: textAlign,
       maxLines: maxLines,
       overflow: textOverflow,
@@ -58,4 +68,20 @@ class AppText extends StatelessWidget {
   }
 }
 
-///class AppTextStyle extends StatelessWidget {}
+TextStyle appTextStyle({
+  Color? color,
+  FontWeight? fontWeight,
+  double? fontSize,
+  double? height,
+  TextDecoration? textDecoration,
+}) {
+  return TextStyle(
+    fontFamily: "GothamRounded",
+    color: color,
+    fontWeight: fontWeight ?? FontWeight.w400,
+    fontSize: fontSize,
+    height: height,
+    decoration: textDecoration,
+    decorationColor: color,
+  );
+}
