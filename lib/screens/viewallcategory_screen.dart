@@ -2,6 +2,7 @@ import 'package:discese_dictionary/sharedwidgtes/categorycard_viewall.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 
+import '../databasehelper/app_preference.dart';
 import '../models/triviamodel.dart';
 
 class ViewallcategoryScreen extends StatelessWidget {
@@ -28,7 +29,9 @@ class ViewallcategoryScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        backgroundColor: ColorUtils.selectedColor,
+        backgroundColor: AppPreference.getTheme()
+            ? Theme.of(context).scaffoldBackgroundColor
+            : ColorUtils.selectedColor,
         centerTitle: true,
       ),
 

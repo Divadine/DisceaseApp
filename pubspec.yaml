@@ -100,6 +100,29 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/inter.ttf
+
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/poppins.ttf
+
+    - family: Roboto Serif
+      fonts:
+        - asset: assets/fonts/robotoserif.ttf
+
+    - family: Open Sans
+      fonts:
+        - asset: assets/fonts/opensans.ttf
+
+    - family: Nunito Sans
+      fonts:
+        - asset: assets/fonts/nunitosans.ttf
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

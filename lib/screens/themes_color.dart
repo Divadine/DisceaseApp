@@ -2,6 +2,8 @@ import 'package:discese_dictionary/main.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 
+import '../databasehelper/app_preference.dart';
+
 class ThemesColor extends StatefulWidget {
   const ThemesColor({super.key});
 
@@ -36,7 +38,9 @@ class _ThemesColorState extends State<ThemesColor> {
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
         ),
-        backgroundColor: ColorUtils.selectedColor,
+        backgroundColor: AppPreference.getTheme()
+            ? Theme.of(context).scaffoldBackgroundColor
+            : ColorUtils.selectedColor,
         title: Text(
           "Themes",
           style: TextStyle(
@@ -67,13 +71,11 @@ class _ThemesColorState extends State<ThemesColor> {
                     bool isSelected = selectedIndex == index;
                     return GestureDetector(
                       onTap: () {
-                        print("Theme Selected iiiiii");
-
                         setState(() {
                           selectedIndex = index;
                         });
-                        print("Theme Selected");
-                        themeCtrl.sink.add(true);
+
+                        colorCtrl.sink.add(Color(colorsTheme[selectedIndex]));
                         setState(() {});
                       },
                       child: Container(
@@ -109,8 +111,6 @@ class _ThemesColorState extends State<ThemesColor> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      print("Theme Selected kkkkkkk");
-
                       if (selectedIndex != -1) {
                         setState(() {
                           ColorUtils.selectedColor = Color(
@@ -118,7 +118,7 @@ class _ThemesColorState extends State<ThemesColor> {
                           );
                         });
 
-                        themeCtrl.sink.add(true);
+                        colorCtrl.sink.add(Color(colorsTheme[selectedIndex]));
                       } else {
                         Navigator.pop(context);
                       }

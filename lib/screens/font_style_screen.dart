@@ -1,7 +1,9 @@
+import 'package:discese_dictionary/databasehelper/app_preference.dart';
 import 'package:discese_dictionary/databasehelper/font_helper.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
 
 class FontStyleScreen extends StatefulWidget {
   const FontStyleScreen({super.key});
@@ -19,8 +21,7 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
     "Nunito Sans",
   ];
   String? selectedFont;
-  String? appliedFont;
-  final String text =
+  final String texts =
       'Acne is a common skin condition that occurs when hair follicles become.';
 
   @override
@@ -30,20 +31,13 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
   }
 
   Future<void> loadSavedFont() async {
-    final prefs = await SharedPreferences.getInstance();
-    String savedFont = prefs.getString("app_font") ?? 'Inter';
-    setState(() {
-      selectedFont = savedFont;
-      appliedFont = savedFont;
-    });
+    selectedFont = AppPreference.getFontChange() ?? "Inter";
+    setState(() {});
   }
 
   Future<void> saveFont() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString("app_font", selectedFont!);
-    setState(() {
-      appliedFont = selectedFont;
-    });
+    await AppPreference.setFontChange(selectedFont ?? 'Inter');
+    fontCtrl.sink.add(selectedFont ?? 'Inter');
     Navigator.pop(context, selectedFont);
   }
 
@@ -75,7 +69,9 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
         //     color: Colors.white,
         //   ),
         // ),
-        backgroundColor: ColorUtils.selectedColor,
+        backgroundColor: AppPreference.getTheme()
+            ? Theme.of(context).scaffoldBackgroundColor
+            : ColorUtils.selectedColor,
       ),
 
       body: Padding(
@@ -86,7 +82,9 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
             Center(
               child: AppText(
                 text: 'Preview',
-                style: appTextStyle(color: Colors.black),
+                style: appTextStyle(
+                  color: AppPreference.getTheme() ? Colors.white : Colors.black,
+                ),
               ),
               //Text(
               //   'Preview',
@@ -110,8 +108,10 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: AppText(
-                  text: text,
-                  style: AppFonts.getFont(selectedFont ?? 'Inter'),
+                  text: texts,
+                  style: AppFonts.getFont(selectedFont ?? 'Inter').copyWith(
+                    color: AppPreference.getTheme() ? Colors.black : Colors.red,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 //Text(
@@ -128,8 +128,9 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
             Center(
               child: AppText(
                 text: 'Choose Font',
+
                 style: appTextStyle(
-                  color: Colors.black,
+                  color: AppPreference.getTheme() ? Colors.white : Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),
@@ -181,7 +182,12 @@ class _FontStyleScreenState extends State<FontStyleScreen> {
                   },
                   child: AppText(
                     text: 'Cancel',
-                    style: appTextStyle(fontSize: 15, color: Colors.black),
+                    style: appTextStyle(
+                      fontSize: 15,
+                      color: AppPreference.getTheme()
+                          ? Colors.white
+                          : Colors.black,
+                    ),
                   ),
                   // Text(
                   //   'Cancel',

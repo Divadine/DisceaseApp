@@ -5,7 +5,9 @@ import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../databasehelper/app_preference.dart';
 import '../utils/app_utils.dart';
+import 'disceasedict_homeScreen.dart';
 import 'diseasedetail_screen.dart';
 import 'notes_list_screen.dart';
 
@@ -63,7 +65,10 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => DisceaseDictionary()),
+              );
             },
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
@@ -77,7 +82,9 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
             ),
           ),
           centerTitle: true,
-          backgroundColor: ColorUtils.selectedColor,
+          backgroundColor: AppPreference.getTheme()
+              ? Theme.of(context).scaffoldBackgroundColor
+              : ColorUtils.selectedColor,
           bottom: const TabBar(
             tabs: [
               Tab(text: 'Diseases'),

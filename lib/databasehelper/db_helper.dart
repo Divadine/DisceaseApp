@@ -475,12 +475,4 @@ class DbHelper {
               )
               .toList();
   }
-
-  // id INTEGER PRIMARY KEY,
-  //
-  //     disease_id INTEGER,
-  // name TEXT,
-  //     video TEXT,
-  // thumbnail_image TEXT,
-  //     description TEXT
 }

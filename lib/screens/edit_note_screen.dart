@@ -1,6 +1,9 @@
 import 'package:discese_dictionary/databasehelper/db_helper.dart';
 import 'package:flutter/material.dart';
 
+import '../databasehelper/app_preference.dart';
+import '../utils/app_utils.dart';
+
 class EditNoteScreen extends StatefulWidget {
   final Map<String, dynamic> noteData;
 
@@ -68,6 +71,9 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
   Widget build(BuildContext conetext) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppPreference.getTheme()
+            ? Theme.of(context).scaffoldBackgroundColor
+            : ColorUtils.selectedColor,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);

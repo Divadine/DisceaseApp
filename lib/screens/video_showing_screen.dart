@@ -8,6 +8,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 
+import '../databasehelper/app_preference.dart';
+import '../databasehelper/font_helper.dart';
+
 class VideoShowingScreen extends StatefulWidget {
   final String name;
   final List<VideoModel> videos;
@@ -123,7 +126,9 @@ class _VideoShowingScreenState extends State<VideoShowingScreen> {
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
         ),
-        backgroundColor: ColorUtils.primary,
+        backgroundColor: AppPreference.getTheme()
+            ? Theme.of(context).scaffoldBackgroundColor
+            : ColorUtils.selectedColor,
         title: Text(
           widget.name,
           style: TextStyle(
@@ -268,6 +273,67 @@ class _VideoShowingScreenState extends State<VideoShowingScreen> {
                                   if (isBookmarked) {
                                     await DbHelper.instance
                                         .deleteVideoBookmarks(currentVideo.id);
+
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              18,
+                                            ),
+                                          ),
+                                          title: AppText(
+                                            text: 'Remove Bookmark',
+                                            style: appTextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          content: AppText(
+                                            text:
+                                                'Are you sure want to unsave this Video',
+                                          ),
+
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: AppText(
+                                                text: 'Cancel',
+                                                style: appTextStyle(
+                                                  color:
+                                                      ColorUtils.selectedColor,
+                                                ),
+                                              ),
+                                            ),
+
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    ColorUtils.selectedColor,
+                                              ),
+                                              onPressed: () async {
+                                                DbHelper.instance
+                                                    .deleteBookmarks(
+                                                      currentVideo.id,
+                                                    );
+
+                                                Navigator.pop(context);
+
+                                                setState(() {});
+                                              },
+                                              child: AppText(
+                                                text: 'Remove',
+                                                style: appTextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                                   } else {
                                     await DbHelper.instance
                                         .insertVideoBookmarks(video);

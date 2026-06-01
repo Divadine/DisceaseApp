@@ -4,6 +4,7 @@ import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../databasehelper/app_preference.dart';
 import 'edit_note_screen.dart';
 import 'notes_screen.dart';
 
@@ -58,7 +59,9 @@ class _NotesListScreenState extends State<NotesListScreen> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: ColorUtils.selectedColor,
+        backgroundColor: AppPreference.getTheme()
+            ? Theme.of(context).scaffoldBackgroundColor
+            : ColorUtils.selectedColor,
       ),
 
       body: notes.isEmpty

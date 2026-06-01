@@ -4,6 +4,7 @@ import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../databasehelper/app_preference.dart';
 import '../models/triviamodel.dart';
 import 'diseasedetail_screen.dart';
 
@@ -76,7 +77,9 @@ class _SearchScreenState extends State<SearchScreen> {
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
           ),
-          backgroundColor: ColorUtils.primary,
+          backgroundColor: AppPreference.getTheme()
+              ? Theme.of(context).scaffoldBackgroundColor
+              : ColorUtils.selectedColor,
           centerTitle: true,
           title: Text(
             'Search',

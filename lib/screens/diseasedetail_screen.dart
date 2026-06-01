@@ -1,4 +1,5 @@
 import 'package:discese_dictionary/databasehelper/db_helper.dart';
+import 'package:discese_dictionary/databasehelper/font_helper.dart';
 import 'package:discese_dictionary/screens/video_showing_screen.dart';
 import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../api/apiservice.dart';
+import '../databasehelper/app_preference.dart';
 import '../models/disease_details.dart';
 import '../utils/app_utils.dart';
 import 'notes_screen.dart';
@@ -275,7 +277,9 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
           ),
           //title: Text(widget.diseaseName,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
           //centerTitle: true,
-          backgroundColor: ColorUtils.primary,
+          backgroundColor: AppPreference.getTheme()
+              ? Theme.of(context).scaffoldBackgroundColor
+              : ColorUtils.selectedColor,
           actions: [
             //speaker
             IconButton(
@@ -288,12 +292,63 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
                 if (isBookMarked) {
                   await DbHelper.instance.deleteBookmarks(widget.diseaseId);
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(" Bookmark is removed"),
-                      duration: Duration(seconds: 1),
-                    ),
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        title: AppText(
+                          text: 'Remove Bookmark',
+                          style: appTextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        content: AppText(
+                          text: 'Are you sure want to unsave this Disease',
+                          style: appTextStyle(fontWeight: FontWeight.bold),
+                        ),
+
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: AppText(
+                              text: 'Cancel',
+                              style: appTextStyle(
+                                color: ColorUtils.selectedColor,
+                              ),
+                            ),
+                          ),
+
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: ColorUtils.selectedColor,
+                            ),
+                            onPressed: () async {
+                              DbHelper.instance.deleteBookmarks(
+                                widget.diseaseId,
+                              );
+
+                              Navigator.pop(context);
+
+                              setState(() {});
+                            },
+                            child: AppText(
+                              text: 'Remove',
+                              style: appTextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   );
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   const SnackBar(
+                  //     content: Text(" Bookmark is removed"),
+                  //     duration: Duration(seconds: 1),
+                  //   ),
+                  // );
                 } else {
                   await DbHelper.instance.insertBookmarks(
                     diseaseId: widget.diseaseId,

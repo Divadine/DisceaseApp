@@ -1,7 +1,9 @@
+import 'package:discese_dictionary/databasehelper/app_preference.dart';
 import 'package:discese_dictionary/screens/themes_color.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
 import '../sharedwidgtes/disclamier_contents.dart';
 import 'font_style_screen.dart';
 
@@ -13,6 +15,19 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  bool isDarkTheme = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadTheme();
+  }
+
+  void loadTheme() {
+    isDarkTheme = AppPreference.getTheme();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -59,8 +74,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ListTile(
                     leading: Icon(Icons.dark_mode),
                     title: Text("Dark mode"),
-                    onTap: () {},
-                    trailing: Icon(Icons.arrow_forward_ios),
+
+                    //onTap: () {},
+                    trailing: Switch(
+                      value: isDarkTheme,
+                      onChanged: (value) async {
+                        setState(() {
+                          isDarkTheme = value;
+                        });
+
+                        await AppPreference.setTheme(value);
+
+                        themeCtrl.sink.add(value);
+                      },
+                    ),
                   ),
 
                   //3rd widget

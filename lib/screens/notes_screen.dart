@@ -2,6 +2,8 @@ import 'package:discese_dictionary/databasehelper/db_helper.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 
+import '../databasehelper/app_preference.dart';
+import '../databasehelper/font_helper.dart';
 import 'notes_list_screen.dart';
 
 class NotesScreen extends StatefulWidget {
@@ -52,7 +54,9 @@ class _NotesScreenState extends State<NotesScreen> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: ColorUtils.selectedColor,
+        backgroundColor: AppPreference.getTheme()
+            ? Theme.of(context).scaffoldBackgroundColor
+            : ColorUtils.selectedColor,
       ),
 
       body: Padding(
@@ -92,6 +96,56 @@ class _NotesScreenState extends State<NotesScreen> {
                 //cancel button
                 ElevatedButton(
                   onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          title: AppText(
+                            text: 'Remove Bookmark',
+                            style: appTextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          content: AppText(
+                            text: 'Are you sure want to unsave this Note',
+                          ),
+
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: AppText(
+                                text: 'Cancel',
+                                style: appTextStyle(
+                                  color: ColorUtils.selectedColor,
+                                ),
+                              ),
+                            ),
+
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: ColorUtils.selectedColor,
+                              ),
+                              onPressed: () async {
+                                DbHelper.instance.deleteBookmarks(
+                                  widget.diseaseId,
+                                );
+
+                                Navigator.pop(context);
+
+                                setState(() {});
+                              },
+                              child: AppText(
+                                text: 'Remove',
+                                style: appTextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                     Navigator.pop(context);
                     // setState(() {
                     //   isCancel=!isCancel;

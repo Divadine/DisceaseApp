@@ -1,4 +1,5 @@
 import 'package:discese_dictionary/databasehelper/db_helper.dart';
+import 'package:discese_dictionary/databasehelper/font_helper.dart';
 import 'package:discese_dictionary/screens/diseasedetail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -84,16 +85,34 @@ class _AlphabetOrderDiseaseListState extends State<AlphabetOrderDiseaseList> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
-                        widget.diseaseNameAlphabet,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
+                      child:
+                          // AppText(
+                          //   text: widget.diseaseNameAlphabet,
+                          //   maxLines: 1,
+                          //   textOverflow: TextOverflow.ellipsis,
+                          //   style: appTextStyle(
+                          //     color: Colors.black,
+                          //     fontWeight: FontWeight.bold,
+                          //     fontSize: 16,
+                          //   ),
+                          // ),
+                          // AppFonts.getFont(
+                          //   AppPreference.getFontChange() ?? 'Inter',
+                          // ).copyWith(
+                          //   color: Colors.black,
+                          //   fontWeight: FontWeight.bold,
+                          //   fontSize: 16,
+                          // ),
+                          Text(
+                            widget.diseaseNameAlphabet,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                     ),
                     SizedBox(width: 200),
 
@@ -128,7 +147,8 @@ class _AlphabetOrderDiseaseListState extends State<AlphabetOrderDiseaseList> {
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text(" Bookmark is removed"),
+                              content: AppText(text: " Bookmark is removed"),
+                              //Text(" Bookmark is removed"),
                               duration: Duration(seconds: 1),
                             ),
                           );

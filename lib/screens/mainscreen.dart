@@ -15,12 +15,6 @@ class Mainscreen extends StatefulWidget {
 
 class _MainscreenState extends State<Mainscreen> {
   int selectedindex = 0;
-  final List<Widget> screens = [
-    DisceaseDictionary(),
-    SearchScreen(),
-    VideoShowingScreen(name: 'Reels', videos: []),
-    BookmarkScreen(),
-  ];
 
   void onItemTapped(int index) {
     setState(() {

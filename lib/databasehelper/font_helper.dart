@@ -1,3 +1,4 @@
+import 'package:discese_dictionary/databasehelper/app_preference.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -75,8 +76,9 @@ TextStyle appTextStyle({
   double? height,
   TextDecoration? textDecoration,
 }) {
-  return TextStyle(
-    fontFamily: "GothamRounded",
+  final selectedFonts = AppPreference.getFontChange() ?? 'Inter';
+  print("Current Font = $selectedFonts");
+  return AppFonts.getFont(selectedFonts).copyWith(
     color: color,
     fontWeight: fontWeight ?? FontWeight.w400,
     fontSize: fontSize,
