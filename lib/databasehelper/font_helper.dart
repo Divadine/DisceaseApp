@@ -77,7 +77,7 @@ TextStyle appTextStyle({
   TextDecoration? textDecoration,
 }) {
   final selectedFonts = AppPreference.getFontChange() ?? 'Inter';
-  print("Current Font = $selectedFonts");
+ 
   return AppFonts.getFont(selectedFonts).copyWith(
     color: color,
     fontWeight: fontWeight ?? FontWeight.w400,

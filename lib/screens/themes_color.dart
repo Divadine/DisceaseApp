@@ -122,6 +122,8 @@ class _ThemesColorState extends State<ThemesColor> {
                       } else {
                         Navigator.pop(context);
                       }
+
+                      Navigator.pop(context, selectedIndex);
                     },
                     child: Text('apply'),
                   ),

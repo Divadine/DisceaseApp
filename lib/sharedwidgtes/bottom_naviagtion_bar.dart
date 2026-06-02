@@ -1,3 +1,4 @@
+import 'package:discese_dictionary/databasehelper/app_preference.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   final Function(int) onTap;
   final int currentIndex;
 
-  CustomBottomNavigationBar({
+  const CustomBottomNavigationBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
@@ -16,7 +17,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ColorUtils.selectedColor,
+      color: AppPreference.getTheme() ? Colors.black : ColorUtils.selectedColor,
       height: 60,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
