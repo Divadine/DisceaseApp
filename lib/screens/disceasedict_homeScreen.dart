@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:discese_dictionary/databasehelper/app_preference.dart';
+import 'package:discese_dictionary/databasehelper/font_helper.dart';
 import 'package:discese_dictionary/screens/settings_screen.dart';
 import 'package:discese_dictionary/screens/viewallcategory_screen.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
@@ -88,6 +89,11 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary> {
   @override
   Widget build(BuildContext context) {
     final themeColor = Theme.of(context).scaffoldBackgroundColor;
+
+    //disease sorting for A,B,C headers
+    disceaseList.sort(
+      (a, b) => (a.disceaseName ?? '').compareTo(b.disceaseName ?? ''),
+    );
 
     List<Triviamodel> currentThreeTrivia = [];
     if (triviaList.isNotEmpty) {
@@ -241,12 +247,70 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary> {
                               controller: scrollController,
                               itemCount: disceaseList.length,
                               itemBuilder: (context, index) {
-                                return AlphabetOrderDiseaseList(
-                                  diseaseNameAlphabet:
-                                      disceaseList[index].disceaseName ?? "",
-                                  diseaseId: disceaseList[index].id,
-                                  catId: disceaseList[index].cat_id,
+                                String currentLetter =
+                                    (disceaseList[index].disceaseName ?? '')
+                                        .substring(0, 1)
+                                        .toUpperCase();
+
+                                bool showHeader = true;
+
+                                if (index > 0) {
+                                  String previousLetter =
+                                      (disceaseList[index - 1].disceaseName ??
+                                              '')
+                                          .substring(0, 1)
+                                          .toUpperCase();
+
+                                  showHeader = currentLetter != previousLetter;
+                                }
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (showHeader)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 15,
+                                          left: 20,
+                                          bottom: 5,
+                                          right: 25,
+                                        ),
+                                        child: Container(
+                                          width: double.infinity,
+                                          height: 50,
+
+                                          decoration: BoxDecoration(
+                                            color: Color(0xffEFE6FD),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              left: 15,
+                                              right: 10,
+                                              top: 15,
+                                            ),
+                                            child: AppText(
+                                              text: currentLetter,
+                                              style: appTextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    AlphabetOrderDiseaseList(
+                                      diseaseNameAlphabet:
+                                          disceaseList[index].disceaseName ??
+                                          "",
+                                      diseaseId: disceaseList[index].id,
+                                      catId: disceaseList[index].cat_id,
+                                    ),
+                                  ],
                                 );
+
+                                // return
                               },
                             ),
                           ),
