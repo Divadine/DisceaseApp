@@ -45,7 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case 5:
         return SvgPicture.asset(AssetImages.five_star);
       default:
-        return SvgPicture.asset(AssetImages.three_star);
+        return null;
     }
   }
 
@@ -62,40 +62,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               child: Container(
                 padding: EdgeInsets.all(20),
+
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.yellow.shade200,
-                          child: getEmoji(rating),
-                        ),
+                    rating == 0
+                        ? Image.asset(AssetImages.rateus, height: 150)
+                        : Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CircleAvatar(
+                                radius: 25,
+                                backgroundColor: Colors.yellow.shade200,
+                                child: rating == 0
+                                    ? Image.asset(AssetImages.rateus)
+                                    : getEmoji(rating),
+                              ),
 
-                        SizedBox(height: 15),
+                              SizedBox(height: 15),
 
-                        AppText(
-                          text: 'Thanks!',
-                          style: appTextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).textTheme.bodyLarge?.color,
+                              Column(
+                                children: [
+                                  AppText(
+                                    text: 'Thanks!',
+                                    style: appTextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(
+                                        context,
+                                      ).textTheme.bodyLarge?.color,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 15),
+
+                              AppText(
+                                text:
+                                    'we will work harder to make you more satisfied',
+                                style: appTextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).textTheme.bodyLarge?.color,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
                           ),
-                        ),
-                        SizedBox(height: 15),
-
-                        AppText(
-                          text:
-                              'we will work harder to make you more satisfied',
-                          style: appTextStyle(
-                            color: Theme.of(context).textTheme.bodyLarge?.color,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
 
                     //stars
                     Row(
@@ -105,7 +118,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         (stars) => IconButton(
                           onPressed: () {
                             setDialogState(() {
-                              rating = stars + 1;
+                              int selectedStar = stars + 1;
+                              if (rating == selectedStar) {
+                                rating = rating - 1;
+                              } else {
+                                rating = selectedStar;
+                              }
                             });
                           },
                           icon: Icon(

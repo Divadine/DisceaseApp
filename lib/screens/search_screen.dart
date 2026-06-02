@@ -239,22 +239,88 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
 
             //videos
-            Container(child: Image.asset(AssetImages.no_search_found)),
+            //Container(child: Image.asset(AssetImages.no_search_found)),
+            Column(
+              children: [
+                Expanded(
+                  child: isLoading
+                      ? Image.asset(AssetImages.no_search_found)
+                      : filteredDiseases.isEmpty
+                      ? Center(
+                          child: Image.asset(
+                            AssetImages.search_for_disease,
+                            height: 200,
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: filteredDiseases.length,
+
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => DiseaseDetailsScreen(
+                                      catId:
+                                          filteredDiseases[index].cat_id ?? 0,
+                                      diseaseName:
+                                          filteredDiseases[index]
+                                              .disceaseName ??
+                                          '',
+                                      diseaseId: filteredDiseases[index].id,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                children: [
+                                  SizedBox(height: 20),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 10,
+                                      right: 10,
+                                    ),
+                                    child: Container(
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Color(0xffFFFFFF),
+                                      ),
+
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 15,
+                                          right: 10,
+                                        ),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            filteredDiseases[index]
+                                                    .disceaseName ??
+                                                '',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            ),
           ],
         ),
-
-        //bottom
-        // bottomNavigationBar: SafeArea(
-        //   child: CustomBottomNavigationBar(
-        //       currentIndex: selectedIndex,
-        //       onTap:(index){
-        //         setState(() {
-        //           selectedIndex = index;
-        //         });
-        //       }
-        //
-        //   ),
-        // ),
       ),
     );
   }
