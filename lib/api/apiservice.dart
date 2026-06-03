@@ -117,4 +117,27 @@ class ApiService {
       return false;
     }
   }
+
+  //6th Api for Video Search
+
+  Future<List<VideoModel>> searchVideos(String searchAlphabet) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${_baseUrl}reels/search'),
+        body: jsonEncode({'search': searchAlphabet}),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        final search = data['resultData'];
+
+        return search.map<VideoModel>((s) => VideoModel.fromJson(s)).toList();
+      }
+      return [];
+    } catch (e) {
+      throw Exception('error ---------------->>>>> $e');
+    }
+  }
 }
