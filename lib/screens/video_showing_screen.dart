@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:discese_dictionary/api/apiservice.dart';
 import 'package:discese_dictionary/databasehelper/db_helper.dart';
 import 'package:discese_dictionary/models/disease_details.dart';
@@ -5,6 +6,8 @@ import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 
@@ -106,6 +109,47 @@ class _VideoShowingScreenState extends State<VideoShowingScreen> {
     await initializeVideo(videos[index]);
 
     await checkVideoBookmarks();
+  }
+
+  //Future<void> downloadPhotos(String imageUrl) async {}
+
+  Future<void> downloadVideos(String videoUrl) async {
+    try {
+      await Permission.manageExternalStorage.request();
+
+      final dir = await getExternalStorageDirectory();
+
+      if (dir == null) {
+        throw Exception('Storage directory not found');
+      }
+      final fileName = 'video_${DateTime.now().millisecondsSinceEpoch}.mp4';
+
+      final savePath = '/storage/emulated/0/Download/$fileName';
+      //'${dir.path}/$fileName';
+      await Dio().download(
+        videoUrl,
+        savePath,
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            print('${((received / total) * 100).toStringAsFixed(0)}%');
+          }
+        },
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Video downloaded successfully')),
+        );
+      }
+      print('Saved at: $savePath');
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Download failed')));
+      }
+      throw Exception('error ----->>>>>>>>>>>>>$e');
+    }
   }
 
   @override
@@ -371,7 +415,9 @@ class _VideoShowingScreenState extends State<VideoShowingScreen> {
                           Column(
                             children: [
                               IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  downloadVideos(video.video);
+                                },
                                 icon: Icon(
                                   Icons.download,
                                   color: Colors.white,

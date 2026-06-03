@@ -500,22 +500,32 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
                   ),
 
                   /// PHOTOS TAB
-                  GridView.builder(
-                    itemCount: photos.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 10,
-                        ),
-                    itemBuilder: (context, index) {
-                      return Card(
-                        child: Image.network(
-                          photos[index].image,
-                          fit: BoxFit.cover,
-                        ),
-                      );
+                  GestureDetector(
+                    onTap: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (_) => ImageViewer(photos: []),
+                      //   ),
+                      // );
                     },
+                    child: GridView.builder(
+                      itemCount: photos.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
+                          ),
+                      itemBuilder: (context, index) {
+                        return Card(
+                          child: Image.network(
+                            photos[index].image,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      },
+                    ),
                   ),
 
                   /// VIDEOS TAB
