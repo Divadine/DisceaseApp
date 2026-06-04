@@ -25,6 +25,7 @@ class ApiService {
       final data = jsonDecode(response.body);
       return AllInOneModel.fromJson(data);
     } else {
+      print(response.body);
       throw Exception('Failed');
     }
   }

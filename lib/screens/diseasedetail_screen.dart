@@ -1,5 +1,6 @@
 import 'package:discese_dictionary/databasehelper/db_helper.dart';
 import 'package:discese_dictionary/databasehelper/font_helper.dart';
+import 'package:discese_dictionary/screens/photos.dart';
 import 'package:discese_dictionary/screens/video_showing_screen.dart';
 import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
@@ -502,12 +503,12 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
                   /// PHOTOS TAB
                   GestureDetector(
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (_) => ImageViewer(photos: []),
-                      //   ),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ImageViewer(photos: photos),
+                        ),
+                      );
                     },
                     child: GridView.builder(
                       itemCount: photos.length,

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:discese_dictionary/api/apiservice.dart';
 import 'package:discese_dictionary/screens/mainscreen.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,7 @@ import 'databasehelper/app_preference.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  AppUtils.reportList = await ApiService().getReportsReasons();
+  //AppUtils.reportList = await ApiService().getReportsReasons();
   await AppPreference.init();
   runApp(MyApp());
 }
