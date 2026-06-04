@@ -90,4 +90,7 @@ class AssetImages {
   static const String three_star = "assets/images/svgimages/three_star.svg";
   static const String four_star = "assets/images/svgimages/four_star.svg";
   static const String five_star = "assets/images/svgimages/five_star.svg";
+
+  //no internet
+  static const String nointernet = "assets/images/pngimages/nointernet.png";
 }

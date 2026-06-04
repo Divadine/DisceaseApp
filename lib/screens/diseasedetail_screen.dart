@@ -10,7 +10,9 @@ import 'package:share_plus/share_plus.dart';
 
 import '../api/apiservice.dart';
 import '../databasehelper/app_preference.dart';
+import '../databasehelper/network_helper.dart';
 import '../models/disease_details.dart';
+import '../sharedwidgtes/nointernet.dart';
 import '../utils/app_utils.dart';
 import 'notes_screen.dart';
 
@@ -215,6 +217,15 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
   }
 
   Future<void> fetchDetails() async {
+    bool isConnected = await NetworkHelper.checkConnection(context);
+
+    if (!isConnected) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const NoInternet()),
+      );
+      return;
+    }
     try {
       setState(() {
         isLoading = true;

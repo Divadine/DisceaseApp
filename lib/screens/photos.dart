@@ -7,7 +7,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../databasehelper/network_helper.dart';
 import '../models/disease_details.dart';
+import '../sharedwidgtes/nointernet.dart';
 
 class ImageViewer extends StatefulWidget {
   final List<PhotoModel> photos;
@@ -24,6 +26,15 @@ class _ImageViewerState extends State<ImageViewer> {
   final PageController _pageController = PageController();
 
   Future<void> downloadPhotos(String photosUrl) async {
+    bool isConnected = await NetworkHelper.checkConnection(context);
+
+    if (!isConnected) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const NoInternet()),
+      );
+      return;
+    }
     try {
       await Permission.manageExternalStorage.request();
 

@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../databasehelper/app_preference.dart';
+import '../databasehelper/network_helper.dart';
 import '../models/triviamodel.dart';
+import '../sharedwidgtes/nointernet.dart';
 import 'diseasedetail_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -31,6 +33,15 @@ class _SearchScreenState extends State<SearchScreen> {
   List<VideoModel> filteredVideos = [];
 
   Future<void> getAllDiseasesList() async {
+    bool isConnected = await NetworkHelper.checkConnection(context);
+
+    if (!isConnected) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const NoInternet()),
+      );
+      return;
+    }
     try {
       final data = await DbHelper.instance.getDiseaseListFromDbclient();
 
@@ -65,6 +76,15 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> searchVideos(String value) async {
+    bool isConnected = await NetworkHelper.checkConnection(context);
+
+    if (!isConnected) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const NoInternet()),
+      );
+      return;
+    }
     if (value.trim().isEmpty) {
       setState(() {
         filteredVideos = [];

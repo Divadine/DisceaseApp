@@ -13,6 +13,8 @@ import 'package:video_player/video_player.dart';
 
 import '../databasehelper/app_preference.dart';
 import '../databasehelper/font_helper.dart';
+import '../databasehelper/network_helper.dart';
+import '../sharedwidgtes/nointernet.dart';
 
 class VideoShowingScreen extends StatefulWidget {
   final String name;
@@ -57,6 +59,15 @@ class _VideoShowingScreenState extends State<VideoShowingScreen> {
   }
 
   Future<void> initialFunction() async {
+    bool isConnected = await NetworkHelper.checkConnection(context);
+
+    if (!isConnected) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const NoInternet()),
+      );
+      return;
+    }
     print('index = ===============$currentIndex : ${widget.selectedIndex}');
     if (widget.videos.isNotEmpty) {
       videos = widget.videos;

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../databasehelper/app_preference.dart';
+import '../databasehelper/network_helper.dart';
+import '../sharedwidgtes/nointernet.dart';
 import '../utils/app_utils.dart';
 import 'disceasedict_homeScreen.dart';
 import 'diseasedetail_screen.dart';
@@ -35,6 +37,15 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   }
 
   Future loadNotes() async {
+    bool isConnected = await NetworkHelper.checkConnection(context);
+
+    if (!isConnected) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const NoInternet()),
+      );
+      return;
+    }
     final result = await DbHelper.instance.getAllNotes();
     setState(() {
       notes = result;
@@ -42,6 +53,15 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   }
 
   Future loadBookmarks() async {
+    bool isConnected = await NetworkHelper.checkConnection(context);
+
+    if (!isConnected) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const NoInternet()),
+      );
+      return;
+    }
     final result = await DbHelper.instance.getBookmarks();
     setState(() {
       bookmarksDisease = result;
@@ -49,6 +69,15 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   }
 
   Future loadVideoBookmarks() async {
+    bool isConnected = await NetworkHelper.checkConnection(context);
+
+    if (!isConnected) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const NoInternet()),
+      );
+      return;
+    }
     final data = await DbHelper.instance.getVideoBookmarks();
     print(data);
 

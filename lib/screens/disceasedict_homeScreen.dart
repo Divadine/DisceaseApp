@@ -9,10 +9,12 @@ import 'package:flutter/material.dart';
 
 import '../api/apiservice.dart';
 import '../databasehelper/db_helper.dart';
+import '../databasehelper/network_helper.dart';
 import '../models/triviamodel.dart';
 import '../sharedwidgtes/alphabet_diseae_list.dart';
 import '../sharedwidgtes/discease_categories.dart';
 import '../sharedwidgtes/mainscreenslider.dart';
+import '../sharedwidgtes/nointernet.dart';
 
 class DisceaseDictionary extends StatefulWidget {
   const DisceaseDictionary({super.key});
@@ -39,6 +41,16 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary> {
   }
 
   Future<void> fetchSaveAndLoadData() async {
+    bool isConnected = await NetworkHelper.checkConnection(context);
+
+    if (!isConnected) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const NoInternet()),
+      );
+      return;
+    }
+
     try {
       setState(() {
         isLoading = true;
@@ -322,6 +334,15 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary> {
                 ),
               ],
             ),
+
+            // floatingActionButton: FloatingActionButton(
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (_) => NoInternet()),
+            //     );
+            //   },
+            // ),
           );
   }
 }
