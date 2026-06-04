@@ -295,6 +295,7 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary> {
                                               style: appTextStyle(
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.bold,
+                                                color: Colors.black,
                                               ),
                                             ),
                                           ),

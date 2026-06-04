@@ -40,32 +40,29 @@ class DisceaseCategories extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(12),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    category.image,
-                    width: double.infinity,
-                    fit: BoxFit.contain,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child; // image loaded
-                      }
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  category.image,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) {
+                      return child; // image loaded
+                    }
 
-                      return const Center(child: CircularProgressIndicator());
-                    },
+                    return const Center(child: CircularProgressIndicator());
+                  },
 
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Center(
-                        child: Icon(
-                          Icons.broken_image,
-                          size: 40,
-                          color: Colors.grey,
-                        ),
-                      );
-                    },
-                  ),
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Center(
+                      child: Icon(
+                        Icons.broken_image,
+                        size: 40,
+                        color: Colors.grey,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
