@@ -1,7 +1,9 @@
 import 'package:discese_dictionary/databasehelper/db_helper.dart';
 import 'package:discese_dictionary/databasehelper/font_helper.dart';
+import 'package:discese_dictionary/databasehelper/network_helper.dart';
 import 'package:discese_dictionary/screens/photos.dart';
 import 'package:discese_dictionary/screens/video_showing_screen.dart';
+import 'package:discese_dictionary/sharedwidgtes/nointernet.dart';
 import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -10,9 +12,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../api/apiservice.dart';
 import '../databasehelper/app_preference.dart';
-import '../databasehelper/network_helper.dart';
 import '../models/disease_details.dart';
-import '../sharedwidgtes/nointernet.dart';
 import '../utils/app_utils.dart';
 import 'notes_screen.dart';
 
@@ -37,6 +37,7 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
   bool isBookMarked = false;
   int? expandedIndex;
   int noteCount = 1;
+  bool hasInternet = true;
 
   List<InfoModel> infoList = [];
   List<PhotoModel> photos = [];
@@ -208,6 +209,12 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
   }
 
   Future<void> checkBookmark() async {
+    final hasInternet = await NetworkHelper.checkConnection(context);
+    if (!hasInternet) {
+      setState(() {
+        return;
+      });
+    }
     final result = await DbHelper.instance.checkBookmarksExists(
       widget.diseaseId,
     );
@@ -217,14 +224,11 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
   }
 
   Future<void> fetchDetails() async {
-    bool isConnected = await NetworkHelper.checkConnection(context);
-
-    if (!isConnected) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const NoInternet()),
-      );
-      return;
+    final hasInternet = await NetworkHelper.checkConnection(context);
+    if (!hasInternet) {
+      setState(() {
+        return;
+      });
     }
     try {
       setState(() {
@@ -442,7 +446,14 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
           ),
         ),
 
-        body: isLoading
+        body: !hasInternet
+            ? NoInternet(
+                onTap: () {
+                  checkBookmark();
+                  fetchDetails();
+                },
+              )
+            : isLoading
             ? const Center(child: CircularProgressIndicator())
             : TabBarView(
                 children: [

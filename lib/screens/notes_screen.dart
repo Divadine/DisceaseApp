@@ -1,4 +1,6 @@
 import 'package:discese_dictionary/databasehelper/db_helper.dart';
+import 'package:discese_dictionary/databasehelper/network_helper.dart';
+import 'package:discese_dictionary/sharedwidgtes/nointernet.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -22,8 +24,16 @@ class _NotesScreenState extends State<NotesScreen> {
   bool isSaved = false;
   bool isCancel = false;
   bool isFill = false;
+  bool hasInternet = true;
 
   Future saveNotes() async {
+    final hasInternet = await NetworkHelper.checkConnection(context);
+
+    if (!hasInternet) {
+      setState(() {
+        return;
+      });
+    }
     await DbHelper.instance.insertNotes(
       diseaseId: widget.diseaseId,
       title: titleController.text,
@@ -59,140 +69,148 @@ class _NotesScreenState extends State<NotesScreen> {
             : ColorUtils.selectedColor,
       ),
 
-      body: Padding(
-        padding: EdgeInsets.all(30),
-        child: Column(
-          children: [
-            TextField(
-              controller: titleController,
-              maxLines: 1,
-              maxLength: 30,
+      body: !hasInternet
+          ? NoInternet(
+              onTap: () {
+                saveNotes();
+              },
+            )
+          : Padding(
+              padding: EdgeInsets.all(30),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: titleController,
+                    maxLines: 1,
+                    maxLength: 30,
 
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: " Add title",
-              ),
-            ),
-
-            SizedBox(height: 20),
-
-            TextField(
-              controller: contentController,
-              maxLines: 6,
-              maxLength: 250,
-              decoration: const InputDecoration(
-                hintText: "Text here...",
-
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            //SizedBox(height: 30,),
-
-            //buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                //cancel button
-                ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          title: AppText(
-                            text: 'Remove Bookmark',
-                            style: appTextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          content: AppText(
-                            text: 'Are you sure want to unsave this Note',
-                          ),
-
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: AppText(
-                                text: 'Cancel',
-                                style: appTextStyle(
-                                  color: ColorUtils.selectedColor,
-                                ),
-                              ),
-                            ),
-
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: ColorUtils.selectedColor,
-                              ),
-                              onPressed: () async {
-                                DbHelper.instance.deleteBookmarks(
-                                  widget.diseaseId,
-                                );
-
-                                Navigator.pop(context);
-
-                                setState(() {});
-                              },
-                              child: AppText(
-                                text: 'Remove',
-                                style: appTextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                    Navigator.pop(context);
-                    // setState(() {
-                    //   isCancel=!isCancel;
-                    // });
-                  },
-                  child: Text(
-                    'cancel',
-                    style: TextStyle(
-                      color: isCancel
-                          ? ColorUtils.selectedColor
-                          : Color(0xff828282),
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: " Add title",
                     ),
                   ),
-                ),
 
-                //save button
-                ElevatedButton(
-                  onPressed: () async {
-                    setState(() {
-                      isSaved = !isSaved;
-                    });
-                    await saveNotes();
+                  SizedBox(height: 20),
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => NotesListScreen(
-                          diseaseId: widget.diseaseId,
-                          image: widget.image,
+                  TextField(
+                    controller: contentController,
+                    maxLines: 6,
+                    maxLength: 250,
+                    decoration: const InputDecoration(
+                      hintText: "Text here...",
+
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+
+                  //SizedBox(height: 30,),
+
+                  //buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      //cancel button
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                title: AppText(
+                                  text: 'Remove Bookmark',
+                                  style: appTextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                content: AppText(
+                                  text: 'Are you sure want to unsave this Note',
+                                ),
+
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: AppText(
+                                      text: 'Cancel',
+                                      style: appTextStyle(
+                                        color: ColorUtils.selectedColor,
+                                      ),
+                                    ),
+                                  ),
+
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: ColorUtils.selectedColor,
+                                    ),
+                                    onPressed: () async {
+                                      DbHelper.instance.deleteBookmarks(
+                                        widget.diseaseId,
+                                      );
+
+                                      Navigator.pop(context);
+
+                                      setState(() {});
+                                    },
+                                    child: AppText(
+                                      text: 'Remove',
+                                      style: appTextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          Navigator.pop(context);
+                          // setState(() {
+                          //   isCancel=!isCancel;
+                          // });
+                        },
+                        child: Text(
+                          'cancel',
+                          style: TextStyle(
+                            color: isCancel
+                                ? ColorUtils.selectedColor
+                                : Color(0xff828282),
+                          ),
                         ),
                       ),
-                    );
-                  },
-                  child: Text(
-                    'save',
-                    style: TextStyle(
-                      color: isSaved
-                          ? ColorUtils.selectedColor
-                          : Color(0xff828282),
-                    ),
+
+                      //save button
+                      ElevatedButton(
+                        onPressed: () async {
+                          setState(() {
+                            isSaved = !isSaved;
+                          });
+                          await saveNotes();
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => NotesListScreen(
+                                diseaseId: widget.diseaseId,
+                                image: widget.image,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'save',
+                          style: TextStyle(
+                            color: isSaved
+                                ? ColorUtils.selectedColor
+                                : Color(0xff828282),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

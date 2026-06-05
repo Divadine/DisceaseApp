@@ -1,4 +1,6 @@
+import 'package:discese_dictionary/databasehelper/network_helper.dart';
 import 'package:discese_dictionary/main.dart';
+import 'package:discese_dictionary/sharedwidgtes/nointernet.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +16,7 @@ class ThemesColor extends StatefulWidget {
 class _ThemesColorState extends State<ThemesColor> {
   bool isSelected = false;
   int selectedIndex = -1;
+  bool hasInternet = true;
 
   final List colorsTheme = [
     0xff6200EE,
@@ -52,87 +55,108 @@ class _ThemesColorState extends State<ThemesColor> {
         centerTitle: true,
       ),
 
-      body: Padding(
-        padding: EdgeInsets.only(top: 50, left: 20, right: 20),
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                child: GridView.builder(
-                  itemCount: colorsTheme.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 1.8,
-                  ),
-                  itemBuilder: (context, index) {
-                    bool isSelected = selectedIndex == index;
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedIndex = index;
-                        });
-
-                        colorCtrl.sink.add(Color(colorsTheme[selectedIndex]));
-                        setState(() {});
-                      },
-                      child: Container(
-                        // height: 0,
-                        // width: 80,
-                        decoration: BoxDecoration(
-                          color: Color(colorsTheme[index]),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: isSelected
-                            ? Center(
-                                child: Icon(Icons.check, color: Colors.white),
-                              )
-                            : null,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 200),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
+      body: !hasInternet
+          ? NoInternet(
+              onTap: () async {
+                hasInternet = await NetworkHelper.checkConnection(context);
+                setState(() {});
+              },
+            )
+          : Padding(
+              padding: EdgeInsets.only(top: 50, left: 20, right: 20),
+              child: Column(
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('cancel'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (selectedIndex != -1) {
-                        setState(() {
-                          ColorUtils.selectedColor = Color(
-                            colorsTheme[selectedIndex],
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                        left: 20,
+                        right: 20,
+                      ),
+                      child: GridView.builder(
+                        itemCount: colorsTheme.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                          childAspectRatio: 1.8,
+                        ),
+                        itemBuilder: (context, index) {
+                          bool isSelected = selectedIndex == index;
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedIndex = index;
+                              });
+
+                              colorCtrl.sink.add(
+                                Color(colorsTheme[selectedIndex]),
+                              );
+                              setState(() {});
+                            },
+                            child: Container(
+                              // height: 0,
+                              // width: 80,
+                              decoration: BoxDecoration(
+                                color: Color(colorsTheme[index]),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: isSelected
+                                  ? Center(
+                                      child: Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : null,
+                            ),
                           );
-                        });
+                        },
+                      ),
+                    ),
+                  ),
 
-                        colorCtrl.sink.add(Color(colorsTheme[selectedIndex]));
-                      } else {
-                        Navigator.pop(context);
-                      }
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 50,
+                      vertical: 200,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-                      Navigator.pop(context, selectedIndex);
-                    },
-                    child: Text('apply'),
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (selectedIndex != -1) {
+                              setState(() {
+                                ColorUtils.selectedColor = Color(
+                                  colorsTheme[selectedIndex],
+                                );
+                              });
+
+                              colorCtrl.sink.add(
+                                Color(colorsTheme[selectedIndex]),
+                              );
+                            } else {
+                              Navigator.pop(context);
+                            }
+
+                            Navigator.pop(context, selectedIndex);
+                          },
+                          child: Text('apply'),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }

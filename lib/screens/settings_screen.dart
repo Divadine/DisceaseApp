@@ -21,13 +21,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool isDarkTheme = false;
   bool isPressed = false;
 
+  //bool hasInternet = true;
+
   @override
   void initState() {
     super.initState();
     loadTheme();
   }
 
-  void loadTheme() {
+  void loadTheme() async {
+    // hasInternet = await NetworkHelper.checkConnection(context);
+    //
+    // if (!hasInternet) {
+    //   setState(() {});
+    // }
+
     isDarkTheme = AppPreference.getTheme();
     setState(() {});
   }

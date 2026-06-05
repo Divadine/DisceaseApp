@@ -27,6 +27,7 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary> {
   int currentBatchIndex = 0;
   int selectedIndex = 0;
   bool isLoading = true;
+  bool hasInternet = true;
   List<Triviamodel> triviaList = [];
   List<CategoryModel> categoryList = [];
   List<DisceaseList> disceaseList = [];
@@ -41,13 +42,10 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary> {
   }
 
   Future<void> fetchSaveAndLoadData() async {
-    bool isConnected = await NetworkHelper.checkConnection(context);
+    hasInternet = await NetworkHelper.checkConnection(context);
 
-    if (!isConnected) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const NoInternet()),
-      );
+    if (!hasInternet) {
+      setState(() {});
       return;
     }
 
@@ -115,7 +113,13 @@ class _DisceaseDictionaryState extends State<DisceaseDictionary> {
       );
     }
 
-    return isLoading
+    return !hasInternet
+        ? NoInternet(
+            onTap: () {
+              fetchSaveAndLoadData();
+            },
+          )
+        : isLoading
         ? Center(child: CircularProgressIndicator())
         : Scaffold(
             drawer: SettingsScreen(),

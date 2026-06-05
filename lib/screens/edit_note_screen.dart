@@ -1,4 +1,6 @@
 import 'package:discese_dictionary/databasehelper/db_helper.dart';
+import 'package:discese_dictionary/databasehelper/network_helper.dart';
+import 'package:discese_dictionary/sharedwidgtes/nointernet.dart';
 import 'package:flutter/material.dart';
 
 import '../databasehelper/app_preference.dart';
@@ -14,6 +16,7 @@ class EditNoteScreen extends StatefulWidget {
 }
 
 class _EditNoteScreenState extends State<EditNoteScreen> {
+  bool hasInternet = true;
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
 
@@ -25,6 +28,12 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
   }
 
   Future<void> updateNote() async {
+    final hasInternet = await NetworkHelper.checkConnection(context);
+    if (!hasInternet) {
+      setState(() {
+        return;
+      });
+    }
     await DbHelper.instance.updateNotes(
       id: widget.noteData['id'],
       title: titleController.text,
@@ -35,6 +44,12 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
   }
 
   Future<void> deleteNote() async {
+    final hasInternet = await NetworkHelper.checkConnection(context);
+    if (!hasInternet) {
+      setState(() {
+        return;
+      });
+    }
     await DbHelper.instance.deleteNotes(widget.noteData['id']);
     Navigator.pop(context);
   }
@@ -100,20 +115,36 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
         ],
       ),
 
-      body: Padding(
-        padding: EdgeInsets.all(18),
-        child: Column(
-          children: [
-            TextField(controller: titleController),
-            const SizedBox(height: 20),
-            TextField(controller: contentController, maxLines: 2),
+      body: !hasInternet
+          ? NoInternet(
+              onTap: () {
+                updateNote();
+                deleteNote();
+                titleController = TextEditingController(
+                  text: widget.noteData['title'],
+                );
+                contentController = TextEditingController(
+                  text: widget.noteData['content'],
+                );
+              },
+            )
+          : Padding(
+              padding: EdgeInsets.all(18),
+              child: Column(
+                children: [
+                  TextField(controller: titleController),
+                  const SizedBox(height: 20),
+                  TextField(controller: contentController, maxLines: 2),
 
-            const Spacer(),
+                  const Spacer(),
 
-            ElevatedButton(onPressed: updateNote, child: Text('Save changes')),
-          ],
-        ),
-      ),
+                  ElevatedButton(
+                    onPressed: updateNote,
+                    child: Text('Save changes'),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:discese_dictionary/databasehelper/db_helper.dart';
+import 'package:discese_dictionary/databasehelper/network_helper.dart';
+import 'package:discese_dictionary/sharedwidgtes/nointernet.dart';
 import 'package:discese_dictionary/utils/app_utils.dart';
 import 'package:discese_dictionary/utils/imagesutils.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +26,7 @@ class NotesListScreen extends StatefulWidget {
 
 class _NotesListScreenState extends State<NotesListScreen> {
   List<Map<String, dynamic>> notes = [];
+  bool hasInternet = true;
 
   @override
   void initState() {
@@ -32,6 +35,12 @@ class _NotesListScreenState extends State<NotesListScreen> {
   }
 
   void loadNotes() async {
+    final hasInternet = await NetworkHelper.checkConnection(context);
+    if (!hasInternet) {
+      setState(() {
+        return;
+      });
+    }
     final result = await DbHelper.instance.getNotes(widget.diseaseId);
 
     setState(() {
@@ -64,7 +73,13 @@ class _NotesListScreenState extends State<NotesListScreen> {
             : ColorUtils.selectedColor,
       ),
 
-      body: notes.isEmpty
+      body: !hasInternet
+          ? NoInternet(
+              onTap: () {
+                loadNotes();
+              },
+            )
+          : notes.isEmpty
           ? Center(child: Text(" No Notes"))
           : ListView.builder(
               itemCount: notes.length,

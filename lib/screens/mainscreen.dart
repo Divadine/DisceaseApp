@@ -3,8 +3,6 @@ import 'package:discese_dictionary/screens/video_showing_screen.dart';
 import 'package:discese_dictionary/sharedwidgtes/bottom_naviagtion_bar.dart';
 import 'package:flutter/material.dart';
 
-import '../databasehelper/network_helper.dart';
-import '../sharedwidgtes/nointernet.dart';
 import 'bookmark_screen.dart';
 import 'disceasedict_homeScreen.dart';
 
@@ -19,16 +17,6 @@ class _MainscreenState extends State<Mainscreen> {
   int selectedindex = 0;
 
   void onItemTapped(int index) async {
-    bool isConnected = await NetworkHelper.checkConnection(context);
-
-    if (!isConnected) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const NoInternet()),
-      );
-      return;
-    }
-
     setState(() {
       selectedindex = index;
     });
@@ -40,7 +28,7 @@ class _MainscreenState extends State<Mainscreen> {
       // body: IndexedStack(index: selectedindex, children: screens),
       body: switch (selectedindex) {
         0 => DisceaseDictionary(),
-        1 => SearchScreen(),
+        1 => SearchScreen(category: [], diseaseList: []),
         2 => VideoShowingScreen(name: 'Reels', videos: []),
         3 => BookmarkScreen(),
         _ => DisceaseDictionary(),
